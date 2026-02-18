@@ -1,0 +1,25 @@
+site_name: Transclusion
+site_description: Transclusion framework
+#site_url: https://lineblock.org/
+
+repo_name: kimjarvis/translusion
+repo_url: https://github.com/kimjarvis/translusion
+
+theme:
+  name: material
+  palette:
+    scheme: slate  # This enables dark mode with no toggle
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+nav:
+  - Home: index.md
+  - Development:
+      - Parse Parentheses: parse_parentheses.md
+      - Ensure Balanced Parentheses: ensure_balanced_parentheses.md
+      - Isolate Blocks: isolate_blocks.md
+      - Process Chunks: process_chunks.md
+
+
