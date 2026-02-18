@@ -3,6 +3,9 @@ from parse_parentheses import parse_parentheses
 from isolate_blocks import isolate_blocks
 from process_chunks import process_chunks
 from validate_chunks import validate_chunks
+from execute import (execute)
+
+import pprint
 
 def main():
     print("Transclusion")
@@ -21,7 +24,11 @@ def main():
     print(b)
     c = process_chunks(b)
     print(c)
-    validate_chunks(c)
+    d = validate_chunks(c)
+    print(d)
+    pprint.pp(d)
+    e = execute(d)
+    print(e)
 
 if __name__ == "__main__":
     main()

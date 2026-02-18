@@ -1,42 +1,41 @@
-from typing import Any, Optional
-from pydantic import BaseModel, ConfigDict
+from typing import Any, List, Optional
+from pydantic import BaseModel, ConfigDict, ValidationError
 from filters import Begin, End, Uppercase
 
 
+def validate_chunks(x: List[Any]) -> List[Any]:
+    result = []
+    for item in x:
+        if isinstance(item, str):
+            result.append(item)
+        elif isinstance(item, list):
+            if len(item) != 5:
+                raise ValueError("Invalid sub-list length")
 
-class ChunkValidator:
-    def __init__(self):
-        self._registry: dict[str, type[BaseModel]] = {}
+            types = [str, dict, str, str, dict]
+            for i, t in enumerate(types):
+                if not isinstance(item[i], t):
+                    raise ValueError(f"Invalid sub-list type at position {i}")
 
-    def register(self, type_name: str, model: type[BaseModel]):
-        self._registry[type_name] = model
-
-    def __call__(self, x: list[Any]) -> list[Any]:
-        for i, item in enumerate(x):
-            if not isinstance(item, list) or len(item) != 5:
-                raise ValueError(f"Invalid sub-list length {len(item)} sub-list {item}")
-
-            sub = item
-            for idx, t in enumerate([str, dict, str, str, dict]):
-                if not isinstance(sub[idx], t):
-                    raise ValueError(f"Invalid sub-list type at position {idx}")
-
-            models = []
+            objs = []
             for idx in [1, 4]:
-                d = sub[idx]
-                cls = self._registry.get(d.get("type"))
-                if not cls:
-                    raise ValueError("Invalid parameter: type")
-                models.append(cls.model_validate(d))
+                d = item[idx]
+                try:
+                    model_cls = validate_chunks.registry.get(d.get('type'))
+                    if not model_cls:
+                        raise ValueError(f"Unknown type {d.get('type')}")
+                    objs.append(model_cls(**d))
+                except (ValidationError, ValueError) as e:
+                    raise ValueError(str(e))
 
-            sub.insert(2, models[0])
-            sub.insert(6, models[1])
-            x[i] = sub
+            new_sub = [item[0], item[1], objs[0], item[2], item[3], item[4], objs[1]]
+            result.append(new_sub)
+        else:
+            raise ValueError("Invalid type")
+    return result
 
-        return x
 
-
-validate_chunks = ChunkValidator()
-validate_chunks.register("Begin", Begin)
-validate_chunks.register("End", End)
-validate_chunks.register("Uppercase", Uppercase)
+validate_chunks.registry = {}
+validate_chunks.registry["Begin"] = Begin
+validate_chunks.registry["End"] = End
+validate_chunks.registry["Uppercase"] = Uppercase

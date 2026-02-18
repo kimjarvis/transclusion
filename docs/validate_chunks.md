@@ -39,23 +39,9 @@ Use pydantic V2 to validate the sub-list item [1] and [4] dictionaries.  If `typ
 }
 ```
 
-Import pydantic classes Begin and End from filters.py.
+Import pydantic classes Begin, Uppercase and End from filters.py.
 
-Declare `class Begin(BaseModel)`  to validate this dictionary.
-
-If `type=="End"` then the dictionary has these fields:
-
-```
-{
-    type: str,
- }
-```
-
-Declare `End(BaseModel)` to validate this dictionary.
-
-When the type is neither "Begin" or "End" raise a ValueError with message "Invalid parameter: type"
-
-This example should be valid, no error should be raised.
+Example call:
 
 ```
 validate_chunks(
@@ -87,5 +73,20 @@ Pytests should be in a separate file.
 
 Verify the error conditions.
 
-Verify valid invalid dictionary structures.
+Verify valid invalid dictionary structures.  Use this as a guide:
+
+```python
+@pytest.mark.parametrize("idx, val, msg", [
+    (0, 1, "Invalid sub-list type at position 0"),
+    (1, "x", "Invalid sub-list type at position 1"),
+    (2, 1, "Invalid sub-list type at position 2"),
+    (3, 1, "Invalid sub-list type at position 3"),
+    (4, "x", "Invalid sub-list type at position 4"),
+])
+def test_invalid_types(idx, val, msg):
+    data = ["a", {}, "c", "d", {}]
+    data[idx] = val
+    with pytest.raises(ValueError, match=msg):
+        validate_chunks([data])
+```
 
