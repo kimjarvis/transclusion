@@ -6,7 +6,7 @@ after the last closing parenthesis.
 For each opening parenthesis, ensure a corresponding entry in the result list
 When we find an opening parenthesis, we always add the text before it to the result (even if it's an empty string)
 
-After processing all parentheses, if there's remaining text (text after the last closing parenthesis), we add it.
+After processing all parentheses, if there is text remaining (text after the last closing parenthesis), we add it.
 
 Return the string if there are no parentheses.
 
@@ -16,7 +16,8 @@ Write a single function to perform the task.
 Function signature:
 
 ```python
-def parse_parentheses(string: str, open_parentheses: str="{{", close_parentheses: str="}}") -> list.
+def parse_parentheses(string: str, open_parentheses: str="{{", close_parentheses: str="}}") -> list:
+    pass
 ```
 
 Safely assume that the input string is valid.  That is:
@@ -24,7 +25,7 @@ Safely assume that the input string is valid.  That is:
 - Parentheses are matched. 
 - Parentheses cannot be nested.
 - open_parentheses and close_parentheses are different.
-- The last characer of open_parentheses cannot be the same as the first character of close_parentheses.
+- The last character of open_parentheses cannot be the same as the first character of close_parentheses.
 
 Do not test for invalid input.
 

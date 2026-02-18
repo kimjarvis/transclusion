@@ -54,7 +54,6 @@ validae_chunks(
     "skip": 1,
     "add": 1
 },"B",{"type": "End"}]
-
 ```
 
 Ensure that dictionaries are valid.  They can only contain keys that are present in the schema.  Use the Pydantic V2 construct:
