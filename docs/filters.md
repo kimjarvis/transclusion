@@ -3,6 +3,8 @@ Modify these classes to inherit from abstract class Base.
 
 Each class must have an execute method.
 
+Pydantic v2 classes inherit model_config from parent classes, so move this to the base class.
+
 Execute method signature:
 
 ```python

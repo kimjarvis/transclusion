@@ -3,22 +3,14 @@ from parse_parentheses import parse_parentheses
 from isolate_blocks import isolate_blocks
 from process_chunks import process_chunks
 from validate_chunks import validate_chunks
-from execute import (execute)
+from execute import execute
+from reconstruct import reconstruct
 
 import pprint
 
-def main():
-    print("Transclusion")
-
-    input = """
-
-    {{ { "type": "Uppercase" } }}
-    abcdefg
-    {{ { "type": "End" } }}    
-   
-    """
-    ensure_balanced_parentheses(input)
-    a = parse_parentheses(input)
+def transclude(input: str, open_parentheses: str = "{{", close_parentheses: str = "}}") -> tuple[bool, str]:
+    ensure_balanced_parentheses(input,  open_parentheses, close_parentheses)
+    a = parse_parentheses(input, open_parentheses, close_parentheses)
     print(a)
     b = isolate_blocks(a)
     print(b)
@@ -26,9 +18,28 @@ def main():
     print(c)
     d = validate_chunks(c)
     print(d)
-    pprint.pp(d)
+    # pprint.pp(d)
     e = execute(d)
     print(e)
+    c,f = reconstruct(e, open_parentheses, close_parentheses)
+    print(f)
+    return c,f
+
+
+
+
+def main():
+    print("Transclusion")
+
+    transclude("""
+
+    {{ { "type": "Uppercase" } }}
+    abcdefg
+    {{ { "type": "End" } }}    
+   
+    """)
+
+
 
 if __name__ == "__main__":
     main()

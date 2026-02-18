@@ -3,19 +3,19 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict
 
 class Base(BaseModel, ABC):
+    model_config = ConfigDict(extra='forbid')
+
     @abstractmethod
     def execute(self, data: str) -> str:
         pass
 
 class Uppercase(Base):
-    model_config = ConfigDict(extra='forbid')
     type: str
 
     def execute(self, data: str) -> str:
         return data.upper()
 
 class Begin(Base):
-    model_config = ConfigDict(extra='forbid')
     type: str
     source: str
     shift: Optional[int] = None
@@ -26,7 +26,6 @@ class Begin(Base):
         return data
 
 class End(Base):
-    model_config = ConfigDict(extra='forbid')
     type: str
 
     def execute(self, data: str) -> str:

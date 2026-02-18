@@ -35,30 +35,37 @@ The argument is list with items of type string or type list.
 
 Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have seven elements. 
 
-item [3] is an object of a type that inherits from class Base.
+item [3] is an object of a type that inherits from class Base.  
 item [4] is a string.
 
 Verify that these items are of the correct type.
+
+The item[3] is an object of a class whoes parent class is Base.  Base is defined as follows:
+
+```python
+from abc import ABC, abstractmethod
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
+
+class Base(BaseModel, ABC):
+    @abstractmethod
+    def execute(self, data: str) -> str:
+        pass
+```
+
+Import Base:
+
+```python
+from filters import Base
+```
 
 Call the execute() method of the object with the string as the argument.
 
 item[3].execute(item[4])
 
-Verify the type of each item in the sub-list.  Use this code as a model.
+Verify the type of each item in the sub-list.
 
-```python
-    def execute(x: list[Any]) -> list[Any]:
-        for i, item in enumerate(x):
-            if isinstance(item, list) and len(item) != 7:
-                raise ValueError("Invalid sub-list length")
-
-            sub = item
-            for idx, t in enumerate([str, dict, Base, str, str, dict, Base]):
-                if not isinstance(sub[idx], t):
-                    raise ValueError(f"Invalid sub-list type at position {idx}")
-```
-
-Each Base object has an execute method with signature:
+The abstract Base class requires that the object has an execute method with signature:
 
 ```python
 def execute(self, data: str) -> str:

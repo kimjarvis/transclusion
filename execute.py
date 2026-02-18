@@ -1,23 +1,24 @@
 from typing import Any, List
-
-
-class Base:
-    def execute(self, data: str) -> str:
-        pass
+from filters import Base
 
 
 def execute(x: List[Any]) -> List[Any]:
-    types = [str, dict, Base, str, str, dict, Base]
     for i, item in enumerate(x):
         if isinstance(item, list):
             if len(item) != 7:
-                raise ValueError("Invalid sub-list length")
-            for idx, t in enumerate(types):
-                if not isinstance(item[idx], t):
-                    raise ValueError(f"Invalid sub-list type at position {idx}")
+                raise ValueError(f"Sub-list at index {i} must have 7 elements.")
 
-            base_obj, input_str = item[2], item[3]
-            result = base_obj.execute(input_str)
-            changed = result != input_str
-            item.extend([result, changed])
+            obj, data = item[2], item[3]
+
+            if not isinstance(obj, Base):
+                raise TypeError(f"Item at index 2 in sub-list {i} must inherit from Base.")
+            if not isinstance(data, str):
+                raise TypeError(f"Item at index 3 in sub-list {i} must be a string.")
+
+            result = obj.execute(data)
+            changed = result != data
+
+            item.append(result)
+            item.append(changed)
+
     return x
