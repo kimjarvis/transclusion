@@ -38,7 +38,7 @@ isolate_blocks(["A","B","C","D""E"]) == ["A",["B","C","D"],"E"]
 
 [prcess_chunks](process_chunks.md)
 
-Parse the first and third strings, x and z, as a JSON, to produce python dictionaries.
+Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
 
 ```python
 def process_chunks(x: list[str]) -> list[str]
