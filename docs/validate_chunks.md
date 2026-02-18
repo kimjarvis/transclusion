@@ -1,9 +1,15 @@
-## Write a single function to perform the task.
+## Write a class to perform the task.
+
+Source file: validate_chunks.py
 
 Function signature:
 
 ```python
-def validate_chunks(x: list[str]) -> list[Any]
+class ChunkValidator:
+    def validate_chunks(x: list[str]) -> list[Any]:
+        pass
+    def register(self, filer: str, cls: Any):
+        pass
 ```
 
 Action:
@@ -27,50 +33,23 @@ Check in this order:
 5. Raise a ValueError if the sub-list item [3] is not of type string with message "Invalid sub-list type  at position 3".
 6. Raise a ValueError if the sub-list item [4] is not of type dictionary with message "Invalid sub-list type  at position 4".
 
-Use pydantic V2 to validate the sub-list item [1] and [4] dictionaries.  If `type=="Begin"` then the dictionary has these fields:
+Use pydantic V2 to validate the sub-list item [1] and [4] dictionaries. 
 
-```
-{
-    type: str,
-    source: str,
-    shift: Optional[int],
-    skip: Optional[int],
-    add: Optoinal[int],
-}
-```
+The key "type" must be present in both dictionaries.
+The value of the "type" key must be present in the class registry.
 
-Import pydantic classes Begin, Uppercase and End from filters.py.
+Classes are registered with the register method `register(type, cls)` where type is a string and cls is the pydantic class.
+The type string is used to look up the class in the class registry.  The dictionary is validated using the class.
 
-Example call:
-
-```
-validate_chunks(
-['{"type": "Begin", "source": "example", "shift": 4, "skip": 1, "add": 1}',
-{
-    "type": "Begin",
-    "source": "example",
-    "shift": 4,
-    "skip": 1,
-    "add": 1
-},"B",'{"type": "End"}',{"type": "End"}]
-```
-
-Ensure that dictionaries are valid.  They can only contain keys that are present in the schema.  Use the Pydantic V2 construct:
-
-```python
-    model_config = ConfigDict(extra='forbid')
-```
-
-Output a list with the objects constructed from the dictionaries added.  If the input list is in the form `[m,[a,b,c,d,e],n]` then b and e are both dictionaries.  These dictionaries are used to construct objects x and y.   The output list shall be the list `[m,[a,b,x,c,d,e,y],n]`
-
-Register the pydantic classes with validate_chunks.  Do not refer to them explicitly within the function.
-Begin and End should be registered with validate_chunks.
-Register `"End",End` with validate_chunks to cause dictionaries with `type=="End"` to be validated using class End.
+Output a list with the objects constructed from the dictionaries added.  
+If the input list is in the form `[m,[a,b,c,d,e],n]` then b and e are both dictionaries.  
+These dictionaries are used to construct objects x and y.   
+The output list shall be the list `[m,[a,b,x,c,d,e,y],n]`
 
 ## Write pytest to verify the functionality.
 
 Pytests should be in a separate file.  
-
+Do not define a test class.  Tests should be individual functions.
 Verify the error conditions.
 
 Verify valid invalid dictionary structures.  Use this as a guide:

@@ -1,41 +1,42 @@
-from typing import Any, List, Optional
-from pydantic import BaseModel, ConfigDict, ValidationError
-from filters import Begin, End, Uppercase
+from typing import Any
+from pydantic import BaseModel
 
 
-def validate_chunks(x: List[Any]) -> List[Any]:
-    result = []
-    for item in x:
-        if isinstance(item, str):
-            result.append(item)
-        elif isinstance(item, list):
-            if len(item) != 5:
-                raise ValueError("Invalid sub-list length")
+class ChunkValidator:
+    def __init__(self):
+        self._registry: dict[str, type[BaseModel]] = {}
 
-            types = [str, dict, str, str, dict]
-            for i, t in enumerate(types):
-                if not isinstance(item[i], t):
-                    raise ValueError(f"Invalid sub-list type at position {i}")
+    def register(self, filer: str, cls: Any):
+        self._registry[filer] = cls
 
-            objs = []
-            for idx in [1, 4]:
-                d = item[idx]
-                try:
-                    model_cls = validate_chunks.registry.get(d.get('type'))
-                    if not model_cls:
-                        raise ValueError(f"Unknown type {d.get('type')}")
-                    objs.append(model_cls(**d))
-                except (ValidationError, ValueError) as e:
-                    raise ValueError(str(e))
+    def validate_chunks(self, x: list[Any]) -> list[Any]:
+        result = []
+        for item in x:
+            if isinstance(item, str):
+                result.append(item)
+            elif isinstance(item, list):
+                result.append(self._validate_sub_list(item))
+            else:
+                raise ValueError("Invalid type")
+        return result
 
-            new_sub = [item[0], item[1], objs[0], item[2], item[3], item[4], objs[1]]
-            result.append(new_sub)
-        else:
-            raise ValueError("Invalid type")
-    return result
+    def _validate_sub_list(self, sub: list[Any]) -> list[Any]:
+        if len(sub) != 5:
+            raise ValueError("Invalid sub-list length")
 
+        types = [str, dict, str, str, dict]
+        for i, t in enumerate(types):
+            if not isinstance(sub[i], t):
+                raise ValueError(f"Invalid sub-list type at position {i}")
 
-validate_chunks.registry = {}
-validate_chunks.registry["Begin"] = Begin
-validate_chunks.registry["End"] = End
-validate_chunks.registry["Uppercase"] = Uppercase
+        objs = []
+        for idx in [1, 4]:
+            d = sub[idx]
+            if "type" not in d:
+                raise ValueError("Missing type key")
+            type_name = d["type"]
+            if type_name not in self._registry:
+                raise ValueError(f"Unknown type: {type_name}")
+            objs.append(self._registry[type_name](**d))
+
+        return [sub[0], sub[1], objs[0], sub[2], sub[3], sub[4], objs[1]]

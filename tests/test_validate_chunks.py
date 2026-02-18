@@ -1,34 +1,23 @@
-import sys
-import types
 import pytest
-from typing import Optional
-from pydantic import BaseModel, ConfigDict
+from validate_chunks import ChunkValidator
+from pydantic import BaseModel
 
-# Mock filters module
-filters = types.ModuleType('filters')
-
-class Begin(BaseModel):
-    model_config = ConfigDict(extra='forbid')
-    type: str
-    source: str
-    shift: Optional[int] = None
-    skip: Optional[int] = None
-    add: Optional[int] = None
-
-class End(BaseModel):
-    model_config = ConfigDict(extra='forbid')
+class DummyModel(BaseModel):
     type: str
 
-class Uppercase(BaseModel):
-    model_config = ConfigDict(extra='forbid')
-    type: str
+@pytest.fixture
+def validator():
+    v = ChunkValidator()
+    v.register("dummy", DummyModel)
+    return v
 
-filters.Begin = Begin
-filters.End = End
-filters.Uppercase = Uppercase
-sys.modules['filters'] = filters
+def test_invalid_top_level_type(validator):
+    with pytest.raises(ValueError, match="Invalid type"):
+        validator.validate_chunks([123])
 
-from validate_chunks import validate_chunks
+def test_invalid_sub_list_length(validator):
+    with pytest.raises(ValueError, match="Invalid sub-list length"):
+        validator.validate_chunks([["a", {}, "c", "d"]])
 
 @pytest.mark.parametrize("idx, val, msg", [
     (0, 1, "Invalid sub-list type at position 0"),
@@ -37,37 +26,27 @@ from validate_chunks import validate_chunks
     (3, 1, "Invalid sub-list type at position 3"),
     (4, "x", "Invalid sub-list type at position 4"),
 ])
-def test_invalid_types(idx, val, msg):
-    data = ["a", {}, "c", "d", {}]
+def test_invalid_types(validator, idx, val, msg):
+    data = ["a", {"type": "dummy"}, "c", "d", {"type": "dummy"}]
     data[idx] = val
     with pytest.raises(ValueError, match=msg):
-        validate_chunks([data])
+        validator.validate_chunks([data])
 
-def test_invalid_length():
-    with pytest.raises(ValueError, match="Invalid sub-list length"):
-        validate_chunks([["a", {}, "c", "d"]])
+def test_missing_type_key(validator):
+    data = ["a", {}, "c", "d", {"type": "dummy"}]
+    with pytest.raises(ValueError, match="Missing type key"):
+        validator.validate_chunks([data])
 
-def test_invalid_type_root():
-    with pytest.raises(ValueError, match="Invalid type"):
-        validate_chunks([123])
+def test_unknown_registry_type(validator):
+    data = ["a", {"type": "unknown"}, "c", "d", {"type": "dummy"}]
+    with pytest.raises(ValueError, match="Unknown type"):
+        validator.validate_chunks([data])
 
-def test_valid_transformation():
-    data = [
-        "skip",
-        ["a", {"type": "Begin", "source": "s", "shift": 1, "skip": 1, "add": 1}, "c", "d", {"type": "End"}],
-        "keep"
-    ]
-    res = validate_chunks(data)
-    assert res[0] == "skip"
-    assert res[2] == "keep"
-    sub = res[1]
+def test_valid_transformation(validator):
+    data = ["m", {"type": "dummy"}, "c", "d", {"type": "dummy"}]
+    result = validator.validate_chunks([data])
+    assert len(result) == 1
+    sub = result[0]
     assert len(sub) == 7
-    assert isinstance(sub[2], Begin)
-    assert isinstance(sub[6], End)
-    assert sub[1] == {"type": "Begin", "source": "s", "shift": 1, "skip": 1, "add": 1}
-    assert sub[5] == {"type": "End"}
-
-def test_extra_forbid():
-    data = ["a", {"type": "Begin", "source": "s", "extra": 1}, "c", "d", {"type": "End"}]
-    with pytest.raises(ValueError):
-        validate_chunks([data])
+    assert isinstance(sub[2], DummyModel)
+    assert isinstance(sub[6], DummyModel)
