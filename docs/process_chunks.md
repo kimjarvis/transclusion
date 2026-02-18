@@ -1,18 +1,41 @@
 ## Write a single function to perform the task.
 
+Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
+
 Function signature:
 
 ```python
-def process_chunks(x: list[str]) -> list[str]
+def process_chunks(x: list[str]) -> list[Any]
+```
+
+Expected behaviour:
+
+```python
+process_chunks([[
+        """
+            {  "name": "John Doe" } 
+        """,
+        "B",
+        """
+            {  "title": "John Doe" }
+        """]]) == [[
+        """
+            {  "name": "John Doe" } 
+        """,
+        {'name': 'John Doe'},
+        'B',
+        """
+            {  "title": "John Doe" }
+        """,    
+        {'title': 'John Doe'}
+        ]]
 ```
 
 Action:
 
 The argument is list with items of type string or type list.
 
-Iterate through the list processing the items with type list.  We refer to these items as sub-lists.  Items of type string are passed through to the 
-
-output list unchanged.
+Iterate through the list processing the items with type list.  We refer to these items as sub-lists.  Items of type string are passed through to the output list unchanged.
 
 Each sub-list will have three elements of type string. 
 
@@ -22,15 +45,15 @@ Check in this order:
 2. Raise a ValueError if list items are neither strings or lists with message "Invalid item type"
 3. Raise a ValueError if the sub-list items are not all of type string with message "Invalid list item".
 
-Let `[[x,y,z]]` represent the sub-list.
+Let `[x,y,z]` represent the sub-list in list `[m,[x,y,z],n]`] 
 
-Parse the first and third strings, x and z, as a JSON, to produce python dictionaries.
-Replace x and z with the dictionaries.
+Parse the first and third strings in the sub-list, x and z, as a JSON, to produce python dictionaries, a and b.
+Return the sub-list with the dictionaries in this order:  
 
-- Raise a ValueError if the parsing the json fails with message "Failed to parse JSON".
+`[m,[x,a,y,z,b],n]`
 
-Output the original list with the first and last item of each sub-list converted to 
-a python dictionary.
+- Raise a ValueError if the parsing the json fails with a message "Failed to parse JSON".
+
 
 ## Write pytest to verify the functionality.
 
@@ -42,7 +65,7 @@ process_chunks([5]) raise ValueError Invalid item type
 
 process_chunks([['A']]) raise ValueError Invalid sub-list length
 
-process_chunks([[5]]) raise ValueError Invalid list item
+process_chunks([['A',3,'C']]) raise ValueError Invalid list item
 
 process_chunks([['A','B','C']]) raise ValueError Failed to parse json
 
@@ -58,7 +81,12 @@ process_chunks([["""
 
 The function returns 
 
-[{
+["""
+
+{  "name": "John Doe",  "email": "john@example.com",  "age": 30,  "active": true,  "roles": ["admin", "user"],  "address": {    "street": "123 Main St",    "city": "New York",    "country": "USA"  },  "projects": [    {"id": 1, "name": "Website Redesign"},    {"id": 2, "name": "Mobile App"}  ] }
+
+""",
+{
     "name": "John Doe",
     "email": "john@example.com",
     "age": 30,
@@ -73,4 +101,9 @@ The function returns
         {"id": 1, "name": "Website Redesign"},
         {"id": 2, "name": "Mobile App"}
     ]
-},"B",{"title": "John Doe"}]
+},"B","""
+
+{  "title": "John Doe" }
+
+""",
+{"title": "John Doe"}]

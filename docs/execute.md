@@ -1,0 +1,86 @@
+## Write a single function to perform the task.
+
+Function signature:
+
+```python
+def execute(x: list[Any]) -> list[Any]
+```
+
+Expected behavior:
+
+```python
+execute([['A', 
+          {'type': 'Begin', 'source': 's', 'shift': 1}, 
+          Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
+          'B', 
+          'C', 
+          {'type': 'End'}, 
+          End(type='End')
+          ]]) ==
+          [['A', 
+          {'type': 'Begin', 'source': 's', 'shift': 1}, 
+          Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
+          'B', 
+          'C', 
+          {'type': 'End'}, 
+          End(type='End'),
+          'result of execute()',
+          True
+          ]]    
+```
+
+Action:
+
+The argument is list with items of type string or type list.
+
+Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have seven elements. 
+
+item [3] is an object of a type that inherits from class Base.
+item [4] is a string.
+
+Verify that these items are of the correct type.
+
+Call the execute() method of the object with the string as the argument.
+
+item[3].execute(item[4])
+
+Verify the type of each item in the sub-list.  Use this code as a model.
+
+```python
+    def execute(x: list[Any]) -> list[Any]:
+        for i, item in enumerate(x):
+            if isinstance(item, list) and len(item) != 7:
+                raise ValueError("Invalid sub-list length")
+
+            sub = item
+            for idx, t in enumerate([str, dict, Base, str, str, dict, Base]):
+                if not isinstance(sub[idx], t):
+                    raise ValueError(f"Invalid sub-list type at position {idx}")
+```
+
+Each Base object has an execute method with signature:
+
+```python
+def execute(self, data: str) -> str:
+    pass
+```
+
+Test whether the output of execute() is equal to the input string set a boolian value called `changed` to be true if they are not equal.  That is, whether
+
+```python
+changed = item[3].execute(item[4]) == item[4]
+```
+
+Output the input list with the result of execute() added to the sub-list.  
+If the input list is in the form `[m,[a,b,c,d,e,f,g],n]` then c is an object of type Base and
+d is a string.  Call the output of `c.execute(d)` h and the changed indicator i 
+The output list shall be the list `[m,[a,b,c,d,e,f,g,h,i],n]`
+
+## Write pytest to verify the functionality.
+
+Pytests should be in a separate file.  
+Do not use a class, each test should be a function.
+
+- Verify the error conditions.
+- Verify valid invalid dictionary structures.
+- Test changing and not changing values.
