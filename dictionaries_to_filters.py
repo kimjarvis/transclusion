@@ -8,7 +8,7 @@ class ChunkValidator:
     def register(self, filer: str, cls: Any):
         self._registry[filer] = cls
 
-    def validate_chunks(self, x: list[Any]) -> list[Any]:
+    def dictionaries_to_filters(self, x: list[Any]) -> list[Any]:
         result = []
         for item in x:
             if isinstance(item, str):

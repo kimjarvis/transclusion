@@ -1,19 +1,19 @@
 ## Write a single function to perform the task.
 
-In source file: `process_chunks.py`
+In source file: `blocks_to_dictionaries.py`
 
 Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
 
 Function signature:
 
 ```python
-def process_chunks(x: list[str]) -> list[Any]
+def blocks_to_dictionaries(x: list[str]) -> list[Any]
 ```
 
 Expected behaviour:
 
 ```python
-process_chunks([[
+blocks_to_dictionaries([[
         """
             {  "name": "John Doe" } 
         """,
@@ -66,17 +66,17 @@ Pytests should be in a separate file.
 Do not define a test class.  
 Tests should be individual functions.
 
-assert process_chunks(['A'])==['A']
+assert blocks_to_dictionaries(['A'])==['A']
 
-process_chunks([5]) raise ValueError Invalid item type
+blocks_to_dictionaries([5]) raise ValueError Invalid item type
 
-process_chunks([['A']]) raise ValueError Invalid sub-list length
+blocks_to_dictionaries([['A']]) raise ValueError Invalid sub-list length
 
-process_chunks([['A',3,'C']]) raise ValueError Invalid list item
+blocks_to_dictionaries([['A',3,'C']]) raise ValueError Invalid list item
 
-process_chunks([['A','B','C']]) raise ValueError Failed to parse json
+blocks_to_dictionaries([['A','B','C']]) raise ValueError Failed to parse json
 
-process_chunks([["""
+blocks_to_dictionaries([["""
 
 {  "name": "John Doe",  "email": "john@example.com",  "age": 30,  "active": true,  "roles": ["admin", "user"],  "address": {    "street": "123 Main St",    "city": "New York",    "country": "USA"  },  "projects": [    {"id": 1, "name": "Website Redesign"},    {"id": 2, "name": "Mobile App"}  ] }
 

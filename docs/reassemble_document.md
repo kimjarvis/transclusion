@@ -1,17 +1,17 @@
 ## Write a single function to perform the task.
 
-Source file: reconstruct.py
+Source file: reassemble_document.py
 
 Function signature:
 
 ```python
-def reconstruct(x: list[Any], open_delimiter: str="{{", close_delimiter: str="}}") -> Tuple[bool, str]
+def reassemble_document(x: list[Any], open_delimiter: str="{{", close_delimiter: str="}}") -> Tuple[bool, str]
 ```
 
 Expected behavior:
 
 ```python
-reconstruct(["m",["a","b","c","d","e","g","h",True],"n"]) == True,"m{{a}}h{{e}}n"
+reassemble_document(["m",["a","b","c","d","e","g","h",True],"n"]) == True,"m{{a}}h{{e}}n"
 ```
 
 Action:

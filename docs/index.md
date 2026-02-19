@@ -50,20 +50,20 @@ Expected behaviour:
 isolate_blocks(["A","B","C","D""E"]) == ["A",["B","C","D"],"E"]
 ```
 
-# [prcess_chunks](process_chunks.md)
+# [prcess_chunks](blocks_to_dictionaries.md)
 
 Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
 
 Function signature:
 
 ```python
-def process_chunks(x: list[str]) -> list[Any]
+def blocks_to_dictionaries(x: list[str]) -> list[Any]
 ```
 
 Expected behaviour:
 
 ```python
-process_chunks([[
+blocks_to_dictionaries([[
         """
             {  "name": "John Doe" } 
         """,
@@ -83,20 +83,20 @@ process_chunks([[
         ]]
 ```
 
-# [validate_chunks](validate_chunks.md)
+# [dictionaries_to_filters](dictionaries_to_filters.md)
 
 Uses Pydantic matching to verify that python dictionaries can be converted to objects.
 
 Function signature:
 
 ```python
-def validate_chunks(x: list[Any]) -> None:
+def dictionaries_to_filters(x: list[Any]) -> None:
 ```
 
 Expected behaviour:
 
 ```python
-validate_chunks(
+dictionaries_to_filters(
     [['A', {'type': 'Begin', 'source': 's', 'shift': 1}, 'B', 'C', {'type': 'End'}]]
 ) == [['A', 
        {'type': 'Begin', 'source': 's', 'shift': 1}, 
@@ -112,7 +112,7 @@ validate_chunks(
 
 Defines classes Begin, End and Uppercase.
 
-# [execute](execute.md)
+# [execute](execute_filters.md)
 
 Call the execute method of the filter objects with the string block as the argument.
 
@@ -140,22 +140,22 @@ execute([['A',
           'C', 
           {'type': 'End'}, 
           End(type='End'),
-          'result of execute()'
+          'result of execute_filters()'
           ]]    
 ```
 
-# [reconstruct](reconstruct.md)
+# [reassemble_document](reassemble_document.md)
 
 Construct a string from a list.
 
 Function signature:
 
 ```python
-def reconstruct(x: list[Any], open_delimiter: str="{{", close_delimiter: str="}}") -> bool, str
+def reassemble_document(x: list[Any], open_delimiter: str="{{", close_delimiter: str="}}") -> bool, str
 ```
 
 Expected behavior:
 
 ```python
-reconstruct(["m",["a","b","c","d","e","f","g","h",True],"n"]) == True,"m{{a}}h{{e}}n"
+reassemble_document(["m",["a","b","c","d","e","f","g","h",True],"n"]) == True,"m{{a}}h{{e}}n"
 ```

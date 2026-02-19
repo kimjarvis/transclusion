@@ -29,18 +29,18 @@ Execute method body:
     print(a)
     b = isolate_blocks(a)
     print(b)
-    c = process_chunks(b)
+    c = blocks_to_dictionaries(b)
     print(c)
     v = ChunkValidator()
     v.register("Uppercase", Uppercase)
     v.register("Begin", Begin)
     v.register("End", End)
-    d = v.validate_chunks(c)
+    d = v.dictionaries_to_filters(c)
     print(d)
     # pprint.pp(d)
     e = execute(d)
     print(e)
-    c,f = reconstruct(e, open_delimiter, close_delimiter)
+    c,f = reassemble_document(e, open_delimiter, close_delimiter)
     print(f)
     return c,f
 ```
@@ -49,15 +49,15 @@ Remove the register calls from the class body, these will be issued by the calle
 Remove print statements.
 Make the implementation clear and consise.
 
-Imports 
+Imports
 
 ```python
 from ensure_balanced_delimiters import ensure_balanced_delimiters
 from parse_delimiters import parse_delimiters
 from isolate_blocks import isolate_blocks
-from process_chunks import process_chunks
-from validate_chunks import ChunkValidator
-from execute import execute
-from reconstruct import reconstruct
+from blocks_to_dictionaries import blocks_to_dictionaries
+from dictionaries_to_filters import ChunkValidator
+from execute_filters import execute_filters
+from reassemble_document import reassemble_document
 from filters import Uppercase, Begin, End
 ```

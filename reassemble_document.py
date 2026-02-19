@@ -1,7 +1,7 @@
 from typing import Any, Tuple, List
 
 
-def reconstruct(x: List[Any], open_delimiter: str = "{{", close_delimiter: str = "}}") -> Tuple[bool, str]:
+def reassemble_document(x: List[Any], open_delimiter: str = "{{", close_delimiter: str = "}}") -> Tuple[bool, str]:
     changed = False
     output = []
 

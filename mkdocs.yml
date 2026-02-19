@@ -16,10 +16,5 @@ markdown_extensions:
 
 nav:
   - Home: index.md
-  - Development:
-      - Parse Parentheses: parse_delimiters.md
-      - Ensure Balanced Parentheses: ensure_balanced_delimiters.md
-      - Isolate Blocks: isolate_blocks.md
-      - Process Chunks: process_chunks.md
 
 

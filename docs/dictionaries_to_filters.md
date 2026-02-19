@@ -1,12 +1,12 @@
 ## Write a class to perform the task.
 
-Source file: validate_chunks.py
+Source file: dictionaries_to_filters.py
 
 Function signature:
 
 ```python
 class ChunkValidator:
-    def validate_chunks(x: list[str]) -> list[Any]:
+    def dictionaries_to_filters(x: list[str]) -> list[Any]:
         pass
     def register(self, filer: str, cls: Any):
         pass
@@ -75,6 +75,6 @@ def test_invalid_types(idx, val, msg):
     data = ["a", {}, "c", "d", {}]
     data[idx] = val
     with pytest.raises(ValueError, match=msg):
-        validate_chunks([data])
+        dictionaries_to_filters([data])
 ```
 

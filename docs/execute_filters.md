@@ -1,17 +1,17 @@
 ## Write a single function to perform the task.
 
-Source file: execute.py
+Source file: execute_filters.py
 
 Function signature:
 
 ```python
-def execute(x: list[Any]) -> list[Any]
+def execute_filters(x: list[Any]) -> list[Any]
 ```
 
 Expected behavior:
 
 ```python
-execute([['A', 
+execute_filters([['A', 
           {'type': 'Begin', 'source': 's', 'shift': 1}, 
           Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
           'B', 
@@ -24,7 +24,7 @@ execute([['A',
           'B', 
           'C', 
           {'xtype': 'End'}, 
-          'result of execute()',
+          'result of execute_filters()',
           True
           ]]    
 ```
@@ -75,7 +75,7 @@ def execute(self, data: str) -> str:
 Test whether the output of execute() is equal to the input string set a boolian value called `changed` to be true if they are not equal.  That is, whether
 
 ```python
-changed = item[3].execute(item[4]) == item[4]
+changed = item[3].execute_filters(item[4]) == item[4]
 ```
 
 Output the input list with the result of execute() added to the sub-list.  

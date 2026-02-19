@@ -2,7 +2,7 @@ import json
 from typing import Any
 
 
-def process_chunks(x: list[str]) -> list[Any]:
+def blocks_to_dictionaries(x: list[str]) -> list[Any]:
     result = []
     for item in x:
         if isinstance(item, str):

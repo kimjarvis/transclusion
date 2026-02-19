@@ -2,7 +2,7 @@ from typing import Any
 from filters import Base
 
 
-def execute(x: list[Any]) -> list[Any]:
+def execute_filters(x: list[Any]) -> list[Any]:
     for i, item in enumerate(x):
         if isinstance(item, list):
             if len(item) != 6:
