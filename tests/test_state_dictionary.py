@@ -1,5 +1,5 @@
 import pytest
-from src.transclusion.state_dictionary import State_dictionary
+from src.transclude.state_dictionary import State_dictionary
 
 def test_init():
     assert State_dictionary().state == {}

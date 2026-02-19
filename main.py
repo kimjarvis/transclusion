@@ -1,5 +1,5 @@
-from src.transclusion.filters import Uppercase, Begin, End, Include
-from src.transclusion.transclude import Transclude
+from src.transclude.filters import Uppercase, Begin, End, Include
+from src.transclude.transclude import Transclude
 
 def main():
     t = Transclude()

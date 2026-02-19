@@ -7,7 +7,7 @@ Declare class Include
 ```python
 from pathlib import Path
 from pydantic import Field
-from src.transclusion.filters import Base
+from src.transclude.filters import Base
 
 
 class Include(Base):

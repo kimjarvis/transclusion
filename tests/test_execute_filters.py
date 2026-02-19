@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from unittest.mock import MagicMock
 import sys
 
-from src.transclusion.execute_filters import Base
+from src.transclude.execute_filters import Base
 
 class MockBegin(Base):
     def execute(self, data: str, state: dict) -> str:
@@ -17,7 +17,7 @@ class MockChangedBegin(Base):
 sys.modules['filters'] = MagicMock()
 sys.modules['filters'].Base = Base
 
-from src.transclusion.execute_filters import execute_filters
+from src.transclude.execute_filters import execute_filters
 
 def test_valid_no_change():
     state = {}

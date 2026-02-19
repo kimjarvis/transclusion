@@ -56,7 +56,7 @@ class Base(BaseModel, ABC):
 Import Base:
 
 ```python
-from src.transclusion.filters import Base
+from src.transclude.filters import Base
 ```
 
 Call the execute() method of the object with the string as the argument.
@@ -124,5 +124,5 @@ class MockChangedBegin(Base):
 sys.modules['filters'] = MagicMock()
 sys.modules['filters'].Base = Base
 
-from src.transclusion.execute_filters import execute_filters
+from src.transclude.execute_filters import execute_filters
 ```

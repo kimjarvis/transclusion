@@ -1,5 +1,5 @@
 import pytest
-from src.transclusion.isolate_blocks import isolate_blocks
+from src.transclude.isolate_blocks import isolate_blocks
 
 def test_single_item():
     """Test with a single item (n=0)"""
