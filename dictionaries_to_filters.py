@@ -1,7 +1,7 @@
 from typing import Any
 from pydantic import BaseModel
 
-class ChunkValidator:
+class Registry:
     def __init__(self):
         self._registry = {}
 

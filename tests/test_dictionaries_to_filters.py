@@ -1,13 +1,13 @@
 import pytest
 from pydantic import BaseModel
-from dictionaries_to_filters import ChunkValidator
+from dictionaries_to_filters import Registry
 
 class DummyModel(BaseModel):
     type: str
 
 @pytest.fixture
 def validator():
-    v = ChunkValidator()
+    v = Registry()
     v.register("dummy", DummyModel)
     return v
 

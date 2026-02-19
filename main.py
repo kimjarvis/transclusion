@@ -13,6 +13,11 @@ def main():
     {{  }}r
     abcdefg
     {{ "type": "Uppercase" }}r    
+
+    {{  }}r
+    abcdefg
+    {{ "type": "Uppercase" }}r    
+
    
     """)
     print(x)

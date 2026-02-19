@@ -3,18 +3,18 @@ Write a class `Transclude` to perform the task.
 Class signature:
 
 ```python
-class Transclude(ChunkValidator):
-    def execute(self, input: str) -> tuple[bool, str]:
+class Transclude(Registry):
+    def execute(self, source: str) -> tuple[bool, str]:
         pass
 ```
 
-The constructor sets class fields:
+The constructor has parameters: 
 
 open_delimiter: str = "{{", close_delimiter: str = "}}"
 
 The constructor calls the super constructor with no parameters.
 
-This method is inherited from `ChunkValidator`:
+This method is inherited from `Registry`:
 
 ```python
 def register(self, filer: str, cls: Any) -> None:
@@ -24,30 +24,16 @@ def register(self, filer: str, cls: Any) -> None:
 Execute method body:
 
 ```python
-    ensure_balanced_delimiters(input,  open_delimiter, close_delimiter)
-    a = parse_delimiters(input, open_delimiter, close_delimiter)
-    print(a)
-    b = isolate_blocks(a)
-    print(b)
-    c = blocks_to_dictionaries(b)
-    print(c)
-    v = ChunkValidator()
-    v.register("Uppercase", Uppercase)
-    v.register("Begin", Begin)
-    v.register("End", End)
-    d = v.dictionaries_to_filters(c)
-    print(d)
-    # pprint.pp(d)
-    e = execute(d)
-    print(e)
-    c,f = reassemble_document(e, open_delimiter, close_delimiter)
-    print(f)
-    return c,f
+        ensure_balanced_delimiters(input, self.open_delimiter, self.close_delimiter)
+        parsed = parse_delimiters(input, self.open_delimiter, self.close_delimiter)
+        blocks = isolate_blocks(parsed)
+        chunks = blocks_to_dictionaries(blocks)
+        validated = self.dictionaries_to_filters(chunks)
+        executed = execute_filters(validated)
+        return reassemble_document(executed, self.open_delimiter, self.close_delimiter)
 ```
 
-Remove the register calls from the class body, these will be issued by the caller.
-Remove print statements.
-Make the implementation clear and consise.
+Note that reassemble_document returns tuple[bool, str]
 
 Imports
 
@@ -56,8 +42,7 @@ from ensure_balanced_delimiters import ensure_balanced_delimiters
 from parse_delimiters import parse_delimiters
 from isolate_blocks import isolate_blocks
 from blocks_to_dictionaries import blocks_to_dictionaries
-from dictionaries_to_filters import ChunkValidator
+from dictionaries_to_filters import Registry
 from execute_filters import execute_filters
 from reassemble_document import reassemble_document
-from filters import Uppercase, Begin, End
 ```
