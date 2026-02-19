@@ -1,4 +1,4 @@
-from parse_delimiters import parse_delimiters
+from src.transclusion.parse_delimiters import parse_delimiters
 
 
 def test_single_character():

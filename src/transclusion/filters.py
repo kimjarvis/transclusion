@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
+from pathlib import Path
 
 class Base(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid')
@@ -33,7 +34,10 @@ class End(Base):
 
 class Include(Base):
     type: str = Field(..., description="Include type")
-    source: str = Field(..., alias="file", description="File path to include")
+    source: str = Field(..., description="File path to include")
 
     def execute(self, data: str, state: dict) -> str:
-        return x
+        path = Path(self.source)
+        if not (path.is_file() or path.is_symlink()):
+            raise FileNotFoundError(f"Source must be a file or symlink: {self.source}")
+        return path.read_text(encoding="utf-8")

@@ -1,14 +1,9 @@
 import pytest
-from typing import Any
 from abc import ABC, abstractmethod
 from unittest.mock import MagicMock
 import sys
 
-# Mock Base class to match solution signature
-class Base(ABC):
-    @abstractmethod
-    def execute(self, data: str, state: dict) -> str:
-        pass
+from src.transclusion.execute_filters import Base
 
 class MockBegin(Base):
     def execute(self, data: str, state: dict) -> str:
@@ -22,7 +17,7 @@ class MockChangedBegin(Base):
 sys.modules['filters'] = MagicMock()
 sys.modules['filters'].Base = Base
 
-from execute_filters import execute_filters
+from src.transclusion.execute_filters import execute_filters
 
 def test_valid_no_change():
     state = {}

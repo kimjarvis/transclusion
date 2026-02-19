@@ -1,5 +1,5 @@
 import pytest
-from reassemble_document import reassemble_document
+from src.transclusion.reassemble_document import reassemble_document
 
 @pytest.mark.parametrize("input_data,expected", [
     (["m", ["a", "b", "c", "d", "e", "g", "h", True], "n"], (True, "m{{a}}h{{e}}n")),

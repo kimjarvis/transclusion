@@ -56,7 +56,7 @@ class Base(BaseModel, ABC):
 Import Base:
 
 ```python
-from filters import Base
+from src.transclusion.filters import Base
 ```
 
 Call the execute() method of the object with the string as the argument.
@@ -102,23 +102,27 @@ from abc import ABC, abstractmethod
 from unittest.mock import patch, MagicMock
 import sys
 
+
 # Mock Base class for testing if filters module is unavailable
 class Base(ABC):
     @abstractmethod
     def execute(self, data: str) -> str:
         pass
 
+
 class MockBegin(Base):
     def execute(self, data: str) -> str:
         return data
+
 
 class MockChangedBegin(Base):
     def execute(self, data: str) -> str:
         return f"changed_{data}"
 
+
 # Patch filters.Base before importing solution
 sys.modules['filters'] = MagicMock()
 sys.modules['filters'].Base = Base
 
-from execute_filters import execute_filters
+from src.transclusion.execute_filters import execute_filters
 ```

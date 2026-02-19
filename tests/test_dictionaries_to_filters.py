@@ -1,6 +1,6 @@
 import pytest
 from pydantic import BaseModel
-from dictionaries_to_filters import Registry
+from src.transclusion.dictionaries_to_filters import Registry
 
 class DummyModel(BaseModel):
     type: str

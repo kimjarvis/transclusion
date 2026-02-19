@@ -1,11 +1,11 @@
-from ensure_balanced_delimiters import ensure_balanced_delimiters
-from parse_delimiters import parse_delimiters
-from isolate_blocks import isolate_blocks
-from blocks_to_dictionaries import blocks_to_dictionaries
-from dictionaries_to_filters import Registry
-from execute_filters import execute_filters
-from reassemble_document import reassemble_document
-from state_dictionary import State_dictionary
+from src.transclusion.ensure_balanced_delimiters import ensure_balanced_delimiters
+from src.transclusion.parse_delimiters import parse_delimiters
+from src.transclusion.isolate_blocks import isolate_blocks
+from src.transclusion.blocks_to_dictionaries import blocks_to_dictionaries
+from src.transclusion.dictionaries_to_filters import Registry
+from src.transclusion.execute_filters import execute_filters
+from src.transclusion.reassemble_document import reassemble_document
+from src.transclusion.state_dictionary import State_dictionary
 
 
 class Transclude(Registry, State_dictionary):

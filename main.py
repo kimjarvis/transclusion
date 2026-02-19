@@ -1,22 +1,21 @@
-from filters import Uppercase, Begin, End
-from transclude import Transclude
+from src.transclusion.filters import Uppercase, Begin, End, Include
+from src.transclusion.transclude import Transclude
 
 def main():
-    print("Transclusion")
-
     t = Transclude()
     t.register("Uppercase", Uppercase)
     t.register("Begin", Begin)
     t.register("End", End)
+    t.register("Include", Include)
     c, x = t.render("""
 
-    {{  }}r
+    {{ "type": "Uppercase" }}r
     abcdefg
-    {{ "type": "Uppercase" }}r    
+    {{ }}r    
 
-    {{  }}r
+    {{ "type": "Include", "source": "README.md" }}r
     abcdefg
-    {{ "type": "Uppercase" }}r    
+    {{ }}r    
 
    
     """)
