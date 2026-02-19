@@ -5,19 +5,21 @@ from blocks_to_dictionaries import blocks_to_dictionaries
 from dictionaries_to_filters import Registry
 from execute_filters import execute_filters
 from reassemble_document import reassemble_document
+from state_dictionary import State_dictionary
 
 
-class Transclude(Registry):
+class Transclude(Registry, State_dictionary):
     def __init__(self, open_delimiter: str = "{{", close_delimiter: str = "}}"):
+        State_dictionary.__init__(self)
         super().__init__()
         self.open_delimiter = open_delimiter
         self.close_delimiter = close_delimiter
 
-    def render(self, source: str) -> tuple[bool, str]:
-        ensure_balanced_delimiters(source, self.open_delimiter, self.close_delimiter)
-        parsed = parse_delimiters(source, self.open_delimiter, self.close_delimiter)
+    def render(self, input: str) -> tuple[bool, str]:
+        ensure_balanced_delimiters(input, self.open_delimiter, self.close_delimiter)
+        parsed = parse_delimiters(input, self.open_delimiter, self.close_delimiter)
         blocks = isolate_blocks(parsed)
         chunks = blocks_to_dictionaries(blocks)
         validated = self.dictionaries_to_filters(chunks)
-        executed = execute_filters(validated)
+        executed = execute_filters(validated, self.state)
         return reassemble_document(executed, self.open_delimiter, self.close_delimiter)
