@@ -50,7 +50,7 @@ Expected behaviour:
 isolate_blocks(["A","B","C","D""E"]) == ["A",["B","C","D"],"E"]
 ```
 
-# [prcess_chunks](blocks_to_dictionaries.md)
+# [blocks_to_dictionaries](blocks_to_dictionaries.md)
 
 Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
 
@@ -112,7 +112,7 @@ dictionaries_to_filters(
 
 Defines classes Begin, End and Uppercase.
 
-# [execute](execute_filters.md)
+# [execute_filters](execute_filters.md)
 
 Call the execute method of the filter objects with the string block as the argument.
 

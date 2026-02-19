@@ -8,7 +8,7 @@ def main():
     t.register("Uppercase", Uppercase)
     t.register("Begin", Begin)
     t.register("End", End)
-    c, x = t.execute("""
+    c, x = t.render("""
 
     {{  }}r
     abcdefg

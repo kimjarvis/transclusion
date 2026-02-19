@@ -13,7 +13,7 @@ class Transclude(Registry):
         self.open_delimiter = open_delimiter
         self.close_delimiter = close_delimiter
 
-    def execute(self, source: str) -> tuple[bool, str]:
+    def render(self, source: str) -> tuple[bool, str]:
         ensure_balanced_delimiters(source, self.open_delimiter, self.close_delimiter)
         parsed = parse_delimiters(source, self.open_delimiter, self.close_delimiter)
         blocks = isolate_blocks(parsed)

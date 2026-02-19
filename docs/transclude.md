@@ -4,7 +4,7 @@ Class signature:
 
 ```python
 class Transclude(Registry):
-    def execute(self, source: str) -> tuple[bool, str]:
+    def render(self, source: str) -> tuple[bool, str]:
         pass
 ```
 
@@ -21,7 +21,7 @@ def register(self, filer: str, cls: Any) -> None:
     pass
 ```
 
-Execute method body:
+render method body:
 
 ```python
         ensure_balanced_delimiters(input, self.open_delimiter, self.close_delimiter)
