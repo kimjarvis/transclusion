@@ -1,5 +1,7 @@
 ## Write a single function to perform the task.
 
+In source file: `process_chunks.py`
+
 Parse the first and third strings in sub-lists as a JSON, to produce python dictionaries.
 
 Function signature:
@@ -47,7 +49,10 @@ Check in this order:
 
 Let `[x,y,z]` represent the sub-list in list `[m,[x,y,z],n]`] 
 
-Parse the first and third strings in the sub-list, x and z, as a JSON, to produce python dictionaries, a and b.
+Wrap he first and third strings in the sub-list, x and z in curly braces. 
+For example: '"type": "Uppercase"' becomes '{ "type": "Uppercase" }'
+Parse these wrapped strings as a JSON, to produce python dictionaries, a and b.
+
 Return the sub-list with the dictionaries in this order:  
 
 `[m,[x,a,y,z,b],n]`
@@ -57,7 +62,9 @@ Return the sub-list with the dictionaries in this order:
 
 ## Write pytest to verify the functionality.
 
-Pytests should be in a separate file.
+Pytests should be in a separate file. 
+Do not define a test class.  
+Tests should be individual functions.
 
 assert process_chunks(['A'])==['A']
 

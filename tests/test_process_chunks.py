@@ -155,9 +155,9 @@ def test_multiline_json_strings():
         }
         """
     json2 = """
-        {
+        
             "title": "John Doe"
-        }
+
         """
     result = process_chunks([[json1, "B", json2]])
 
@@ -252,3 +252,70 @@ def test_success_complex_json():
 
     assert process_chunks(input_data) == expected
 
+
+def test_braces_added_to_first_item():
+    """Test that unbraced JSON in first position gets wrapped and parsed."""
+    input_data = [[
+        """
+            "title": "John Doe"
+        """,
+        "B",
+        """
+            { "status": "active" }
+        """
+    ]]
+
+    result = process_chunks(input_data)
+
+    assert result[0][1] == {"title": "John Doe"}
+    assert result[0][4] == {"status": "active"}
+
+
+def test_braces_added_to_third_item():
+    """Test that unbraced JSON in third position gets wrapped and parsed."""
+    input_data = [[
+        """
+            { "name": "Alice" }
+        """,
+        "M",
+        """
+            "role": "admin", "level": 5
+        """
+    ]]
+
+    result = process_chunks(input_data)
+
+    assert result[0][1] == {"name": "Alice"}
+    assert result[0][4] == {"role": "admin", "level": 5}
+
+
+def test_braces_added_to_both_items():
+    """Test that both first and third items get braces added when needed."""
+    input_data = [[
+        '"type": "Uppercase"',
+        "X",
+        '"value": 42'
+    ]]
+
+    result = process_chunks(input_data)
+
+    assert result[0][1] == {"type": "Uppercase"}
+    assert result[0][4] == {"value": 42}
+
+
+def test_braces_added_with_whitespace():
+    """Test brace wrapping handles leading/trailing whitespace correctly."""
+    input_data = [[
+        """
+            "key": "value"
+        """,
+        "sep",
+        """
+                "nested": {"a": 1}
+        """
+    ]]
+
+    result = process_chunks(input_data)
+
+    assert result[0][1] == {"key": "value"}
+    assert result[0][4] == {"nested": {"a": 1}}
