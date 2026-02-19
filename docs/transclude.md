@@ -10,7 +10,7 @@ class Transclude(ChunkValidator):
 
 The constructor sets class fields:
 
-open_parentheses: str = "{{", close_parentheses: str = "}}"
+open_delimiter: str = "{{", close_delimiter: str = "}}"
 
 The constructor calls the super constructor with no parameters.
 
@@ -24,8 +24,8 @@ def register(self, filer: str, cls: Any) -> None:
 Execute method body:
 
 ```python
-    ensure_balanced_parentheses(input,  open_parentheses, close_parentheses)
-    a = parse_parentheses(input, open_parentheses, close_parentheses)
+    ensure_balanced_delimiters(input,  open_delimiter, close_delimiter)
+    a = parse_delimiters(input, open_delimiter, close_delimiter)
     print(a)
     b = isolate_blocks(a)
     print(b)
@@ -40,7 +40,7 @@ Execute method body:
     # pprint.pp(d)
     e = execute(d)
     print(e)
-    c,f = reconstruct(e, open_parentheses, close_parentheses)
+    c,f = reconstruct(e, open_delimiter, close_delimiter)
     print(f)
     return c,f
 ```
@@ -52,8 +52,8 @@ Make the implementation clear and consise.
 Imports 
 
 ```python
-from ensure_balanced_parentheses import ensure_balanced_parentheses
-from parse_parentheses import parse_parentheses
+from ensure_balanced_delimiters import ensure_balanced_delimiters
+from parse_delimiters import parse_delimiters
 from isolate_blocks import isolate_blocks
 from process_chunks import process_chunks
 from validate_chunks import ChunkValidator

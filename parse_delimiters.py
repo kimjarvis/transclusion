@@ -1,31 +1,31 @@
-def parse_parentheses(string: str, open_parentheses: str = "{{", close_parentheses: str = "}}") -> list:
+def parse_delimiters(string: str, open_delimiter: str = "{{", close_delimiter: str = "}}") -> list:
     """
-    Parse a string by splitting at each pair of parentheses.
+    Parse a string by splitting at each pair of delimiters.
 
     Args:
         string: The input string to parse
-        open_parentheses: The opening parenthesis delimiter
-        close_parentheses: The closing parenthesis delimiter
+        open_delimiter: The opening parenthesis delimiter
+        close_delimiter: The closing parenthesis delimiter
 
     Returns:
-        A list containing the text between each pair of parentheses,
+        A list containing the text between each pair of delimiters,
         including empty strings where appropriate
     """
     result = []
     current_pos = 0
-    len_open = len(open_parentheses)
-    len_close = len(close_parentheses)
+    len_open = len(open_delimiter)
+    len_close = len(close_delimiter)
 
-    # If there are no parentheses in the string, return the string as a single element
-    if open_parentheses not in string and close_parentheses not in string:
+    # If there are no delimiters in the string, return the string as a single element
+    if open_delimiter not in string and close_delimiter not in string:
         return [string]
 
     while current_pos < len(string):
         # Find the next opening parenthesis
-        open_pos = string.find(open_parentheses, current_pos)
+        open_pos = string.find(open_delimiter, current_pos)
 
         if open_pos == -1:
-            # No more opening parentheses, add remaining text and break
+            # No more opening delimiters, add remaining text and break
             result.append(string[current_pos:])
             break
 
@@ -33,9 +33,9 @@ def parse_parentheses(string: str, open_parentheses: str = "{{", close_parenthes
         result.append(string[current_pos:open_pos])
 
         # Find the closing parenthesis for this opening
-        close_pos = string.find(close_parentheses, open_pos + len_open)
+        close_pos = string.find(close_delimiter, open_pos + len_open)
 
-        # Extract text between parentheses
+        # Extract text between delimiters
         between_text = string[open_pos + len_open:close_pos]
         result.append(between_text)
 

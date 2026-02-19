@@ -1,37 +1,37 @@
 # Transclusion
 
-# [ensure_balanced_parentheses](ensure_balanced_parentheses.md)
+# [ensure_balanced_delimiters](ensure_balanced_delimiters.md)
 
-Ensures string has balanced parentheses.
+Ensures string has balanced delimiters.
 
 Function signature:
 
 ```python
-def ensure_balanced_parentheses(string: str, 
-                                open_parentheses: str="{{", 
-                                close_parentheses: str="}}") -> None
+def ensure_balanced_delimiters(string: str, 
+                                open_delimiter: str="{{", 
+                                close_delimiter: str="}}") -> None
 ```
 
 Expected behaviour:
 
-Raise an exception when parentheses are not balanced.
+Raise an exception when delimiters are not balanced.
 
-# [parse_parentheses](parse_parentheses.md)
+# [parse_delimiters](parse_delimiters.md)
 
 Parse the string into a list.
 
 Function signature:
 
 ```python
-def parse_parentheses(string: str, 
-                      open_parentheses: str="{{", 
-                      close_parentheses: str="}}") -> list
+def parse_delimiters(string: str, 
+                      open_delimiter: str="{{", 
+                      close_delimiter: str="}}") -> list
 ```
 
 Expected behaviour:
 
 ```python
-parse_parentheses("A{{B}}C{{D}}E") == ["A", "B", "C", "D", "E"]
+parse_delimiters("A{{B}}C{{D}}E") == ["A", "B", "C", "D", "E"]
 ```
 
 # [isolate_blocks](isolate_blocks.md) 
@@ -151,7 +151,7 @@ Construct a string from a list.
 Function signature:
 
 ```python
-def reconstruct(x: list[Any], open_parentheses: str="{{", close_parentheses: str="}}") -> bool, str
+def reconstruct(x: list[Any], open_delimiter: str="{{", close_delimiter: str="}}") -> bool, str
 ```
 
 Expected behavior:
