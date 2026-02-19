@@ -1,3 +1,9 @@
+# UV package manager
+uv.lock
+
+# IDE - JetBrains
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
