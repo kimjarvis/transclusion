@@ -1,12 +1,12 @@
-from typing import Any, List
+from typing import Any
 from filters import Base
 
 
-def execute(x: List[Any]) -> List[Any]:
+def execute(x: list[Any]) -> list[Any]:
     for i, item in enumerate(x):
         if isinstance(item, list):
-            if len(item) != 7:
-                raise ValueError(f"Sub-list at index {i} must have 7 elements.")
+            if len(item) != 6:
+                raise ValueError(f"Sub-list at index {i} must have 6 elements.")
 
             obj, data = item[2], item[3]
 

@@ -1,22 +1,21 @@
 import pytest
 from reconstruct import reconstruct
 
-@pytest.mark.parametrize("inp,args,expected", [
-    (["m",["a","b","c","d","e","f","g","h",True],"n"], (), (True, "m{{a}}h{{e}}n")),
-    (["m",["a","b","c","d","e","f","g","h",False],"n"], (), (False, "m{{a}}h{{e}}n")),
-    (["x",["a","b","c","d","e","f","g","h",True],"y"], ("<", ">"), (True, "x<a>h<e>y")),
+@pytest.mark.parametrize("input_data,expected", [
+    (["m", ["a", "b", "c", "d", "e", "g", "h", True], "n"], (True, "m{{a}}h{{e}}n")),
+    (["x", ["1", "2", "3", "4", "5", "6", "7", False]], (False, "x{{1}}7{{5}}")),
 ])
-def test_valid(inp, args, expected):
-    assert reconstruct(inp, *args) == expected
+def test_reconstruct_success(input_data, expected):
+    assert reconstruct(input_data) == expected
 
-@pytest.mark.parametrize("inp", [
-    ["item", ["short"]],
-    ["item", [1,"b","c","d","e","f","g","h",True]],
-    ["item", ["a","b","c","d","e","f","g",1,True]],
-    ["item", ["a","b","c","d",1,"f","g","h",True]],
-    ["item", ["a","b","c","d","e","f","g","h","not_bool"]],
-    [123],
+@pytest.mark.parametrize("input_data,error_msg", [
+    (["a", ["short"]], "Inner list length must be exactly 8"),
+    (["a", [1, "b", "c", "d", "e", "g", "h", True]], "Item at index 0 must be a string"),
+    (["a", ["a", "b", "c", "d", "e", "g", 6, True]], "Item at index 6 must be a string"),
+    (["a", ["a", "b", "c", "d", 4, "g", "h", True]], "Item at index 4 must be a string"),
+    (["a", ["a", "b", "c", "d", "e", "g", "h", "True"]], "Item at index 7 must be a boolean"),
+    (["a", 123], "Top-level items must be string or list"),
 ])
-def test_invalid(inp):
-    with pytest.raises(ValueError):
-        reconstruct(inp)
+def test_reconstruct_errors(input_data, error_msg):
+    with pytest.raises(ValueError, match=error_msg):
+        reconstruct(input_data)

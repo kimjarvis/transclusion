@@ -10,9 +10,9 @@ def main():
     t.register("End", End)
     c, x = t.execute("""
 
-    {{ { "type": "Uppercase" } }}r
+    {{  }}r
     abcdefg
-    {{ { "type": "End" } }}r    
+    {{ "type": "Uppercase" }}r    
    
     """)
     print(x)

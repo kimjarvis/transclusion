@@ -1,6 +1,6 @@
 import pytest
-from validate_chunks import ChunkValidator
 from pydantic import BaseModel
+from validate_chunks import ChunkValidator
 
 class DummyModel(BaseModel):
     type: str
@@ -15,7 +15,7 @@ def test_invalid_top_level_type(validator):
     with pytest.raises(ValueError, match="Invalid type"):
         validator.validate_chunks([123])
 
-def test_invalid_sub_list_length(validator):
+def test_invalid_sublist_length(validator):
     with pytest.raises(ValueError, match="Invalid sub-list length"):
         validator.validate_chunks([["a", {}, "c", "d"]])
 
@@ -27,26 +27,29 @@ def test_invalid_sub_list_length(validator):
     (4, "x", "Invalid sub-list type at position 4"),
 ])
 def test_invalid_types(validator, idx, val, msg):
-    data = ["a", {"type": "dummy"}, "c", "d", {"type": "dummy"}]
+    data = ["a", {}, "c", "d", {}]
     data[idx] = val
     with pytest.raises(ValueError, match=msg):
         validator.validate_chunks([data])
 
-def test_missing_type_key(validator):
-    data = ["a", {}, "c", "d", {"type": "dummy"}]
-    with pytest.raises(ValueError, match="Missing type key"):
+def test_conflicting_keys(validator):
+    data = ["a", {"key": 1}, "c", "d", {"key": 2}]
+    with pytest.raises(ValueError, match="Conflicting keys found"):
         validator.validate_chunks([data])
 
-def test_unknown_registry_type(validator):
-    data = ["a", {"type": "unknown"}, "c", "d", {"type": "dummy"}]
+def test_missing_type_key(validator):
+    data = ["a", {}, "c", "d", {}]
+    with pytest.raises(ValueError, match="Missing 'type' key"):
+        validator.validate_chunks([data])
+
+def test_unknown_type(validator):
+    data = ["a", {"type": "unknown"}, "c", "d", {}]
     with pytest.raises(ValueError, match="Unknown type"):
         validator.validate_chunks([data])
 
-def test_valid_transformation(validator):
-    data = ["m", {"type": "dummy"}, "c", "d", {"type": "dummy"}]
+def test_valid_flow(validator):
+    data = ["a", {"type": "dummy"}, "c", "d", {}]
     result = validator.validate_chunks([data])
     assert len(result) == 1
-    sub = result[0]
-    assert len(sub) == 7
-    assert isinstance(sub[2], DummyModel)
-    assert isinstance(sub[6], DummyModel)
+    assert len(result[0]) == 6
+    assert isinstance(result[0][2], DummyModel)

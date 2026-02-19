@@ -1,22 +1,42 @@
-from typing import Any
+from typing import Any, Tuple, List
 
-def reconstruct(x: list[Any], open_parentheses: str="{{", close_parentheses: str="}}") -> tuple[bool, str]:
-    changed, out = False, ""
+
+def reconstruct(x: List[Any], open_parentheses: str = "{{", close_parentheses: str = "}}") -> Tuple[bool, str]:
+    changed = False
+    output = []
+
     for item in x:
-        if isinstance(item, str): out += item
+        if isinstance(item, str):
+            output.append(item)
         elif isinstance(item, list):
-            if len(item) != 9: raise ValueError()
-            out += open_parentheses
-            if not isinstance(item[0], str): raise ValueError()
-            out += item[0]
-            out += close_parentheses
-            if not isinstance(item[7], str): raise ValueError()
-            out += item[7]
-            out += open_parentheses
-            if not isinstance(item[4], str): raise ValueError()
-            out += item[4]
-            out += close_parentheses
-            if not isinstance(item[8], bool): raise ValueError()
-            if item[8]: changed = True
-        else: raise ValueError()
-    return changed, out
+            if len(item) != 8:
+                raise ValueError("Inner list length must be exactly 8")
+
+            output.append(open_parentheses)
+
+            if not isinstance(item[0], str):
+                raise ValueError("Item at index 0 must be a string")
+            output.append(item[0])
+
+            output.append(close_parentheses)
+
+            if not isinstance(item[6], str):
+                raise ValueError("Item at index 6 must be a string")
+            output.append(item[6])
+
+            output.append(open_parentheses)
+
+            if not isinstance(item[4], str):
+                raise ValueError("Item at index 4 must be a string")
+            output.append(item[4])
+
+            output.append(close_parentheses)
+
+            if not isinstance(item[7], bool):
+                raise ValueError("Item at index 7 must be a boolean")
+            if item[7]:
+                changed = True
+        else:
+            raise ValueError("Top-level items must be string or list")
+
+    return changed, "".join(output)

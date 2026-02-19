@@ -1,10 +1,9 @@
 from typing import Any
 from pydantic import BaseModel
 
-
 class ChunkValidator:
     def __init__(self):
-        self._registry: dict[str, type[BaseModel]] = {}
+        self._registry = {}
 
     def register(self, filer: str, cls: Any):
         self._registry[filer] = cls
@@ -15,12 +14,12 @@ class ChunkValidator:
             if isinstance(item, str):
                 result.append(item)
             elif isinstance(item, list):
-                result.append(self._validate_sub_list(item))
+                result.append(self._validate_sublist(item))
             else:
                 raise ValueError("Invalid type")
         return result
 
-    def _validate_sub_list(self, sub: list[Any]) -> list[Any]:
+    def _validate_sublist(self, sub: list) -> list:
         if len(sub) != 5:
             raise ValueError("Invalid sub-list length")
 
@@ -29,14 +28,19 @@ class ChunkValidator:
             if not isinstance(sub[i], t):
                 raise ValueError(f"Invalid sub-list type at position {i}")
 
-        objs = []
-        for idx in [1, 4]:
-            d = sub[idx]
-            if "type" not in d:
-                raise ValueError("Missing type key")
-            type_name = d["type"]
-            if type_name not in self._registry:
-                raise ValueError(f"Unknown type: {type_name}")
-            objs.append(self._registry[type_name](**d))
+        merged = self._merge_dicts_safe(sub[1], sub[4])
 
-        return [sub[0], sub[1], objs[0], sub[2], sub[3], sub[4], objs[1]]
+        if "type" not in merged:
+            raise ValueError("Missing 'type' key")
+
+        cls = self._registry.get(merged["type"])
+        if not cls:
+            raise ValueError(f"Unknown type: {merged['type']}")
+
+        obj = cls.model_validate(merged)
+        return [sub[0], sub[1], obj, sub[2], sub[3], sub[4]]
+
+    def _merge_dicts_safe(self, d1: dict, d2: dict) -> dict:
+        if d1.keys() & d2.keys():
+            raise ValueError("Conflicting keys found")
+        return {**d1, **d2}

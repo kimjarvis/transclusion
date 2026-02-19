@@ -1,51 +1,57 @@
 import pytest
-from execute import execute, Base
+from typing import Any
+from abc import ABC, abstractmethod
+from unittest.mock import patch, MagicMock
+import sys
 
-class MockBase(Base):
+# Mock Base class for testing if filters module is unavailable
+class Base(ABC):
+    @abstractmethod
+    def execute(self, data: str) -> str:
+        pass
+
+class MockBegin(Base):
     def execute(self, data: str) -> str:
         return data
 
-class MockChangeBase(Base):
+class MockChangedBegin(Base):
     def execute(self, data: str) -> str:
         return f"changed_{data}"
 
-def test_valid_no_change():
-    data = [["a", {}, MockBase(), "str", "x", {}, None]]
-    result = execute(data)
-    assert result[0][7] == "str"
-    assert result[0][8] is False
+# Patch filters.Base before importing solution
+sys.modules['filters'] = MagicMock()
+sys.modules['filters'].Base = Base
 
-def test_valid_change():
-    data = [["a", {}, MockChangeBase(), "str", "x", {}, None]]
-    result = execute(data)
-    assert result[0][7] == "changed_str"
-    assert result[0][8] is True
+from execute import execute
+
+def test_valid_input_no_change():
+    obj = MockBegin()
+    data = ['A', {}, obj, 'B', 'C', {}]
+    result = execute([data])
+    assert result[0][6] == 'B'
+    assert result[0][7] is False
+
+def test_valid_input_changed():
+    obj = MockChangedBegin()
+    data = ['A', {}, obj, 'B', 'C', {}]
+    result = execute([data])
+    assert result[0][6] == 'changed_B'
+    assert result[0][7] is True
 
 def test_invalid_sublist_length():
-    data = [["a", {}, MockBase()]]
     with pytest.raises(ValueError):
-        execute(data)
+        execute([['A', 'B']])
 
 def test_invalid_base_type():
-    data = [["a", {}, "not_base", "str", "x", {}, None]]
     with pytest.raises(TypeError):
-        execute(data)
+        execute([['A', {}, 'NotBase', 'B', 'C', {}]])
 
 def test_invalid_string_type():
-    data = [["a", {}, MockBase(), 123, "x", {}, None]]
+    class ValidBase(Base):
+        def execute(self, data: str) -> str: return data
     with pytest.raises(TypeError):
-        execute(data)
+        execute([['A', {}, ValidBase(), 123, 'C', {}]])
 
 def test_non_list_items_ignored():
-    data = ["string", {"dict": 1}, ["a", {}, MockBase(), "str", "x", {}, None]]
-    result = execute(data)
-    assert result[0] == "string"
-    assert result[1] == {"dict": 1}
-    assert len(result[2]) == 9
-
-def test_invalid_dict_structure_surrounding():
-    # Ensures function handles dicts at indices 1 and 5 without error
-    data = [["a", {"k": "v"}, MockBase(), "str", "x", {"k": "v"}, None]]
-    result = execute(data)
-    assert result[0][1] == {"k": "v"}
-    assert result[0][5] == {"k": "v"}
+    result = execute(['string', 123, None])
+    assert result == ['string', 123, None]

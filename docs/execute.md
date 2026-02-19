@@ -1,5 +1,7 @@
 ## Write a single function to perform the task.
 
+Source file: execute.py
+
 Function signature:
 
 ```python
@@ -14,16 +16,14 @@ execute([['A',
           Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
           'B', 
           'C', 
-          {'type': 'End'}, 
-          End(type='End')
+          {'xtype': 'End'}, 
           ]]) ==
           [['A', 
           {'type': 'Begin', 'source': 's', 'shift': 1}, 
           Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
           'B', 
           'C', 
-          {'type': 'End'}, 
-          End(type='End'),
+          {'xtype': 'End'}, 
           'result of execute()',
           True
           ]]    
@@ -33,14 +33,14 @@ Action:
 
 The argument is list with items of type string or type list.
 
-Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have seven elements. 
+Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have six elements. 
 
 item [3] is an object of a type that inherits from class Base.  
 item [4] is a string.
 
 Verify that these items are of the correct type.
 
-The item[3] is an object of a class whoes parent class is Base.  Base is defined as follows:
+The item[3] is an object of a class whose parent class is Base.  Base is defined as follows:
 
 ```python
 from abc import ABC, abstractmethod
@@ -79,9 +79,9 @@ changed = item[3].execute(item[4]) == item[4]
 ```
 
 Output the input list with the result of execute() added to the sub-list.  
-If the input list is in the form `[m,[a,b,c,d,e,f,g],n]` then c is an object of type Base and
+If the input list is in the form `[m,[a,b,c,d,e,f],n]` then c is an object of type Base and
 d is a string.  Call the output of `c.execute(d)` h and the changed indicator i 
-The output list shall be the list `[m,[a,b,c,d,e,f,g,h,i],n]`
+The output list shall be the list `[m,[a,b,c,d,e,f,h,i],n]`
 
 ## Write pytest to verify the functionality.
 
