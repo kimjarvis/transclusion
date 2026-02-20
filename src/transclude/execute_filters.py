@@ -5,24 +5,28 @@ from .transclude_base import TranscludeBase
 def execute_filters(x: list[Any], state: dict) -> list[Any]:
     result = []
     for item in x:
-        if isinstance(item, list):
-            if len(item) != 6:
-                raise ValueError("Sub-list must have exactly 6 elements")
-
-            filter_obj = item[2]
-            data_str = item[3]
-
-            if not isinstance(filter_obj, TranscludeBase):
-                raise TypeError(f"{type(filter_obj)} Item  at index 2 must be an instance of TranscludeBase")
-            if not isinstance(data_str, str):
-                raise TypeError(f"{type(filter_obj)} Item at index 3 must be a string")
-
-            output = filter_obj.execute(data_str, state)
-            changed = (output != data_str)
-
-            item.append(output)
-            item.append(changed)
+        if not isinstance(item, list):
             result.append(item)
-        else:
-            result.append(item)
+            continue
+
+        if len(item) != 6:
+            raise ValueError(f"Sub-list must have 6 elements, got {len(item)}")
+
+        # Based on example data and [a,b,c,d,e,f] clarification:
+        # c (index 2) is object, d (index 3) is string
+        obj_item = item[2]
+        str_item = item[3]
+
+        if not isinstance(obj_item, TranscludeBase):
+            raise ValueError(f"Item at index 2 must be TranscludeBase, got {type(obj_item)}")
+
+        if not isinstance(str_item, str):
+            raise ValueError(f"Item at index 3 must be str, got {type(str_item)}")
+
+        executed_value = obj_item.execute(str_item, state)
+        changed = executed_value != str_item
+
+        new_sublist = item + [executed_value, changed]
+        result.append(new_sublist)
+
     return result
