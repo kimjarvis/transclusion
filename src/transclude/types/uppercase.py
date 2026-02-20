@@ -1,7 +1,6 @@
 from typing import Literal
 from ..transclude_base import TranscludeBase
 
-
 class Uppercase(TranscludeBase):
     type: Literal["Uppercase"] = "Uppercase"
 

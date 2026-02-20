@@ -12,7 +12,7 @@ def main():
     abcdefg
     {{ }}r    
 
-    {{ "type": "Include", "source": "README.md" }}r
+    {{ "type": "Include", "source": "example.txt" }}r
     abcdefg
     {{ }}r    
 

@@ -2,7 +2,7 @@
 
 In source: src/transclude/types/uppercase.py
 
-Inherit from an abstract pydantic V2 class TranscludeBase which is defined in src/transclude/transclude_base.py 
+Inherit from an abstract pydantic V2 class TranscludeBase. 
 
 ```python
 from abc import ABC, abstractmethod
@@ -18,14 +18,21 @@ class TranscludeBase(BaseModel, ABC):
         pass
 ```
 
+TranscludeBase is defined in src/transclude/transclude_base.py.  It can be imported like this:
+
+```python
+from ..transclude_base import TranscludeBase
+```
+
+
 Implement the required fields.
 Use Literal["Uppercase"] for Discriminator Safety.
 Implement the required methods.
 
 The execute method shall return the data converted to uppercase.
 
-## Explain the solution
+## Write pytest to verify the functionality.
 
-Describe any logical inconsistencies in the function specification and suggest improvements.
-
-Describe any assumptions which are not explicitly stated in the function specification.
+- Pytests should be in a separate file. 
+- Do not define a test class.  
+- Tests should be individual functions.
