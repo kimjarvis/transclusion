@@ -2,13 +2,7 @@ from typing import Optional
 from pydantic import Field
 from pathlib import Path
 
-from .transclude_base import TranscludeBase
-
-class Uppercase(TranscludeBase):
-    type: str
-
-    def execute(self, data: str, state: dict) -> str:
-        return data.upper()
+from ..transclude_base import TranscludeBase
 
 class Include(TranscludeBase):
     type: str = Field(..., description="Include type")

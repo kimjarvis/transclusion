@@ -3,19 +3,19 @@ from abc import ABC, abstractmethod
 from unittest.mock import MagicMock
 import sys
 
-from src.transclude.execute_filters import Base
+from src.transclude.transclude_base import TranscludeBase
 
-class MockBegin(Base):
+class MockBegin(TranscludeBase):
     def execute(self, data: str, state: dict) -> str:
         return data
 
-class MockChangedBegin(Base):
+class MockChangedBegin(TranscludeBase):
     def execute(self, data: str, state: dict) -> str:
         return f"changed_{data}"
 
 # Patch filters module before importing solution
 sys.modules['filters'] = MagicMock()
-sys.modules['filters'].Base = Base
+sys.modules['filters'].TranscludeBase = TranscludeBase
 
 from src.transclude.execute_filters import execute_filters
 
@@ -39,7 +39,7 @@ def test_invalid_sublist_length():
 
 def test_invalid_base_type():
     with pytest.raises(TypeError):
-        execute_filters([['A', {}, "NotBase", 'B', 'C', {}]], {})
+        execute_filters([['A', {}, "NotTranscludeBase", 'B', 'C', {}]], {})
 
 def test_invalid_string_type():
     with pytest.raises(TypeError):

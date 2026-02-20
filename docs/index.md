@@ -108,10 +108,6 @@ dictionaries_to_filters(
     ]]
 ```
 
-# [filters](filters.md)
-
-Defines classes Begin, End and Uppercase.
-
 # [execute_filters](execute_filters.md)
 
 Call the execute method of the filter objects with the string block as the argument.

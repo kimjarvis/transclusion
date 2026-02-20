@@ -1,5 +1,5 @@
 from typing import Any
-from src.transclude.filters import Base
+from .transclude_base import TranscludeBase
 
 
 def execute_filters(x: list[Any], state: dict) -> list[Any]:
@@ -12,10 +12,10 @@ def execute_filters(x: list[Any], state: dict) -> list[Any]:
             filter_obj = item[2]
             data_str = item[3]
 
-            if not isinstance(filter_obj, Base):
-                raise TypeError("Item at index 2 must be an instance of Base")
+            if not isinstance(filter_obj, TranscludeBase):
+                raise TypeError(f"{type(filter_obj)} Item  at index 2 must be an instance of TranscludeBase")
             if not isinstance(data_str, str):
-                raise TypeError("Item at index 3 must be a string")
+                raise TypeError(f"{type(filter_obj)} Item at index 3 must be a string")
 
             output = filter_obj.execute(data_str, state)
             changed = (output != data_str)

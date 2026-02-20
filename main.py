@@ -1,11 +1,10 @@
-from src.transclude.filters import Uppercase, Begin, End, Include
-from src.transclude.transclude import Transclude
+from transclude.types.uppercase import Uppercase
+from transclude.types.include import Include
+from transclude.transclude import Transclude
 
 def main():
     t = Transclude()
     t.register("Uppercase", Uppercase)
-    t.register("Begin", Begin)
-    t.register("End", End)
     t.register("Include", Include)
     c, x = t.render("""
 
