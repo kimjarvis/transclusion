@@ -23,7 +23,7 @@ render method body:
         blocks = isolate_blocks(parsed)
         chunks = blocks_to_dictionaries(blocks)
         validated = self.dictionaries_to_filters(chunks)
-        executed = execute_filters(validated, self.state)
+        executed = execute_operations(validated, self.state)
         return reassemble_document(executed, self.open_delimiter, self.close_delimiter)
 ```
 
@@ -37,7 +37,7 @@ from src.transclude.parse_delimiters import parse_delimiters
 from src.transclude.isolate_blocks import isolate_blocks
 from src import blocks_to_dictionaries
 from src import Registry
-from src.transclude.execute_filters import execute_filters
+from src.transclude.execute_operations import execute_operations
 from src.transclude.reassemble_document import reassemble_document
 from src.transclude.state_dictionary import State_dictionary
 ```

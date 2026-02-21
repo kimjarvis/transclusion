@@ -108,7 +108,7 @@ dictionaries_to_filters(
     ]]
 ```
 
-# [execute_filters](execute_filters.md)
+# [execute_operations](execute_operations.md)
 
 Call the execute method of the filter objects with the string block as the argument.
 
@@ -136,7 +136,7 @@ execute([['A',
           'C', 
           {'type': 'End'}, 
           End(type='End'),
-          'result of execute_filters()'
+          'result of execute_operations()'
           ]]    
 ```
 

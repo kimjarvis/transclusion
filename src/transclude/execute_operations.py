@@ -2,7 +2,7 @@ from typing import Any
 from .operation import Operation
 
 
-def execute_filters(x: list[Any], state: dict) -> list[Any]:
+def execute_operations(x: list[Any], state: dict) -> list[Any]:
     result = []
     for item in x:
         if not isinstance(item, list):

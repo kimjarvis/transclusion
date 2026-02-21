@@ -1,17 +1,17 @@
 ## Write a single function to perform the task.
 
-Source file: src/transclude/execute_filters.py
+Source file: src/transclude/execute_operations.py
 
 Function signature:
 
 ```python
-def execute_filters(x: list[Any], state: dict) -> list[Any]:
+def execute_operations(x: list[Any], state: dict) -> list[Any]:
 ```
 
 Expected behavior:
 
 ```python
-execute_filters([['A', 
+execute_operations([['A', 
           {'type': 'Begin', 'source': 's', 'shift': 1}, 
           Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
           'B', 
@@ -24,7 +24,7 @@ execute_filters([['A',
           'B', 
           'C', 
           {'xtype': 'End'}, 
-          'result of execute_filters()',
+          'result of execute_operations()',
           True
           ]]    
 ```
@@ -60,13 +60,13 @@ Call the execute() method of the object with the string as the argument.  Like t
 
 item[3].execute(item[4], state)
 
-- state is the dictionary passed as a parameter to execute_filters.
+- state is the dictionary passed as a parameter to execute_operations.
 
 Test whether the output of execute() is equal to the input string set a boolian value called `changed` to be true if they are not equal.  
 Like this:
 
 ```python
-changed = item[3].execute_filters(item[4],state) == item[4]
+changed = item[3].execute_operations(item[4],state) == item[4]
 ```
 
 Output the input list with the result of execute() added to the sub-list.  
