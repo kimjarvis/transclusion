@@ -1,7 +1,7 @@
 from typing import Literal
-from ..transclude_base import TranscludeBase
+from ..operation import Operation
 
-class Uppercase(TranscludeBase):
+class Uppercase(Operation):
     type: Literal["Uppercase"] = "Uppercase"
 
     def execute(self, data: str, state: dict) -> str:

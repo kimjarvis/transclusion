@@ -1,9 +1,9 @@
 import pytest
 from src.transclude.execute_filters import execute_filters
-from src.transclude.transclude_base import TranscludeBase
+from src.transclude.operation import Operation
 
 
-class MockTransclude(TranscludeBase):
+class MockTransclude(Operation):
     type: str = "Mock"
     mock_return: str = ""
 

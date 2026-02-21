@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from src.transclude.types.include import Include
+from src.transclude.operations.include import Include
 
 
 def test_include_basic(tmp_path):

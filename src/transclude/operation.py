@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class TranscludeBase(BaseModel, ABC):
+class Operation(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
     type: str = Field(..., description="Type of transclude operation")

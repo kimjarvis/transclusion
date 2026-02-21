@@ -40,13 +40,13 @@ item [4] is a string.
 
 Verify that these items are of the correct type issue value error with a message if they are not.
 
-The item[3] is an object of a pydantic V2 class whose parent class is defined in src/transclude/transclude_base.py as follows:
+The item[3] is an object of a pydantic V2 class whose parent class is defined in src/transclude/operation.py as follows:
 
 ```python
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class TranscludeBase(BaseModel, ABC):
+class Operation(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
     type: str = Field(..., description="Type of transclude operation")
@@ -70,7 +70,7 @@ changed = item[3].execute_filters(item[4],state) == item[4]
 ```
 
 Output the input list with the result of execute() added to the sub-list.  
-If the input list is in the form `[m,[a,b,c,d,e,f],n]` then c is an object of type TranscludeBase and d is a string.  
+If the input list is in the form `[m,[a,b,c,d,e,f],n]` then c is an object of type Operation and d is a string.  
 Call the output of `c.execute(d, state)` h and the changed indicator i 
 The output list shall be the list `[m,[a,b,c,d,e,f,h,i],n]`
 

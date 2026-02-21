@@ -1,4 +1,4 @@
-from src.transclude.types.uppercase import Uppercase
+from src.transclude.operations.uppercase import Uppercase
 
 def test_instantiation():
     u = Uppercase()

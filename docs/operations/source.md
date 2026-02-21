@@ -2,13 +2,13 @@
 
 In source: src/transclude/types/source.py
 
-Inherit from an abstract pydantic V2 class TranscludeBase. 
+Inherit from an abstract pydantic V2 class Operation. 
 
 ```python
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class TranscludeBase(BaseModel, ABC):
+class Operation(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
     type: str = Field(..., description="Type of transclude operation")
@@ -18,10 +18,10 @@ class TranscludeBase(BaseModel, ABC):
         pass
 ```
 
-TranscludeBase is defined in src/transclude/transclude_base.py.  It can be imported like this:
+Operation is defined in src/transclude/operation.py.  It can be imported like this:
 
 ```python
-from ..transclude_base import TranscludeBase
+from ..operation import Operation
 ```
 
 Implement the required fields.

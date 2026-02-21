@@ -1,10 +1,10 @@
 
-Class TranscludeBase is:
-- An abstract class defined in source: src/transclude/transclude_base.py
+Class Operation is:
+- An abstract class defined in source: src/transclude/operation.py
 - A pydnatic V2 class.
 - Part of the transclude package.
 
-## Generate a the class TranscludeBase
+## Generate a the class Operation
 
 Use this as a guideline.
 
@@ -12,7 +12,7 @@ Use this as a guideline.
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class TranscludeBase(BaseModel, ABC):
+class Operation(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid')
 
     type: str = Field(..., description="Type of transclude operation")

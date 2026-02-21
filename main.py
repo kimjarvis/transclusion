@@ -1,5 +1,5 @@
-from transclude.types.uppercase import Uppercase
-from transclude.types.include import Include
+from transclude.operations.uppercase import Uppercase
+from transclude.operations.include import Include
 from transclude.transclude import Transclude
 
 def main():

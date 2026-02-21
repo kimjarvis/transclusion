@@ -1,5 +1,5 @@
 from typing import Any
-from .transclude_base import TranscludeBase
+from .operation import Operation
 
 
 def execute_filters(x: list[Any], state: dict) -> list[Any]:
@@ -17,8 +17,8 @@ def execute_filters(x: list[Any], state: dict) -> list[Any]:
         obj_item = item[2]
         str_item = item[3]
 
-        if not isinstance(obj_item, TranscludeBase):
-            raise ValueError(f"Item at index 2 must be TranscludeBase, got {type(obj_item)}")
+        if not isinstance(obj_item, Operation):
+            raise ValueError(f"Item at index 2 must be Operation, got {type(obj_item)}")
 
         if not isinstance(str_item, str):
             raise ValueError(f"Item at index 3 must be str, got {type(str_item)}")

@@ -2,10 +2,10 @@ from typing import Optional, Literal
 from pathlib import Path
 from pydantic import Field
 
-from ..transclude_base import TranscludeBase
+from ..operation import Operation
 
 
-class Include(TranscludeBase):
+class Include(Operation):
     type: Literal["Include"] = Field(default="Include")
     source: str = Field(..., description="File path to include")
     head: Optional[int] = Field(default=0, description="Number of lines from the beginning to retain")
