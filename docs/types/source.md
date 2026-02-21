@@ -1,6 +1,6 @@
-## Write a class Include
+## Write a class Source
 
-In source: src/transclude/types/include.py
+In source: src/transclude/types/source.py
 
 Inherit from an abstract pydantic V2 class TranscludeBase. 
 
@@ -25,14 +25,14 @@ from ..transclude_base import TranscludeBase
 ```
 
 Implement the required fields.
-Use Literal["Include"] for Discriminator Safety.
+Use Literal["Source"] for Discriminator Safety.
 Implement the required methods.
 
-Include class has field:
+Source class has field:
 
 ```python
-    type: Literal["Include"] = Field(default="Include", init=False)
-    source: str = Field(..., description="File path to include")
+    type: Literal["Source"] = Field(default="Source", init=False)
+    source: str = Field(..., description="File path to source")
     head: Optional[int] = Field(description="Number of lines from the beginning to retain")
     tail: Optional[int] = Field(description="Number of lines from the end to retain")
 ```
@@ -58,7 +58,7 @@ Implement the execute method.
 - Do not define a test class.  
 - Tests should be individual functions.
 
-Explicitly pass type="Include" when instantiating Include in tests.
+Explicitly pass type="Source" when instantiating Source in tests.
 
 ## Explain the solution
 
