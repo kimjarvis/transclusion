@@ -83,20 +83,20 @@ blocks_to_dictionaries([[
         ]]
 ```
 
-# [dictionaries_to_filters](dictionaries_to_filters.md)
+# [dictionaries_to_operations](dictionaries_to_operations.md)
 
 Uses Pydantic matching to verify that python dictionaries can be converted to objects.
 
 Function signature:
 
 ```python
-def dictionaries_to_filters(x: list[Any]) -> None:
+def dictionaries_to_operations(x: list[Any]) -> None:
 ```
 
 Expected behaviour:
 
 ```python
-dictionaries_to_filters(
+dictionaries_to_operations(
     [['A', {'type': 'Begin', 'source': 's', 'shift': 1}, 'B', 'C', {'type': 'End'}]]
 ) == [['A', 
        {'type': 'Begin', 'source': 's', 'shift': 1}, 
@@ -110,7 +110,7 @@ dictionaries_to_filters(
 
 # [execute_operations](execute_operations.md)
 
-Call the execute method of the filter objects with the string block as the argument.
+Call the execute method of the operation objects with the string block as the argument.
 
 Function signature:
 

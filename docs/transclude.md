@@ -22,7 +22,7 @@ render method body:
         parsed = parse_delimiters(input, self.open_delimiter, self.close_delimiter)
         blocks = isolate_blocks(parsed)
         chunks = blocks_to_dictionaries(blocks)
-        validated = self.dictionaries_to_filters(chunks)
+        validated = self.dictionaries_to_operations(chunks)
         executed = execute_operations(validated, self.state)
         return reassemble_document(executed, self.open_delimiter, self.close_delimiter)
 ```

@@ -8,7 +8,7 @@ class Registry:
     def register(self, filer: str, cls: Any):
         self._registry[filer] = cls
 
-    def dictionaries_to_filters(self, x: list[Any]) -> list[Any]:
+    def dictionaries_to_operations(self, x: list[Any]) -> list[Any]:
         result = []
         for item in x:
             if isinstance(item, str):
