@@ -17,7 +17,7 @@ def execute_phase_two(x: list[Any], state: dict) -> list[Any]:
                 raise ValueError(f"Item at index 6 in sub-list {i} must be a string")
 
             result = op_obj.phase_two(input_str, state)
-            changed = result != input_str
+            changed = result != item[3]
 
             item.append(result)
             item.append(changed)
