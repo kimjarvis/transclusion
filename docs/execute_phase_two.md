@@ -1,22 +1,23 @@
 ## Write a single function to perform the task.
 
-Source file: src/transclude/execute_operations.py
+Source file: src/transclude/execute_phase_two.py
 
 Function signature:
 
 ```python
-def execute_operations(x: list[Any], state: dict) -> list[Any]:
+def execute_phase_two(x: list[Any], state: dict) -> list[Any]:
 ```
 
 Expected behavior:
 
 ```python
-execute_operations([['A', 
+execute_phase_two([['A', 
           {'type': 'Begin', 'source': 's', 'shift': 1}, 
           Begin(type='Begin', source='s', shift=1, skip=None, add=None), 
           'B', 
           'C', 
-          {'xtype': 'End'}, 
+          {'xtype': 'End'},
+          'result of execute_phase_one()',                    
           ]]) ==
           [['A', 
           {'type': 'Begin', 'source': 's', 'shift': 1}, 
@@ -24,7 +25,8 @@ execute_operations([['A',
           'B', 
           'C', 
           {'xtype': 'End'}, 
-          'result of execute_operations()',
+          'result of execute_phase_one()',
+          'result of execute_phase_two()',
           True
           ]]    
 ```
@@ -33,10 +35,10 @@ Action:
 
 The argument is list with items of type string or type list.
 
-Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have six elements. 
+Iterate through the list processing the items with type list. We refer to these items as sub-lists. Each sub-list will have seven elements. 
 
 item [3] is an object.  
-item [4] is a string.
+item [6] is a string.
 
 Verify that these items are of the correct type issue value error with a message if they are not.
 
@@ -52,27 +54,31 @@ class Operation(BaseModel, ABC):
     type: str = Field(..., description="Type of transclude operation")
 
     @abstractmethod
-    def execute(self, data: str, state: dict) -> str:
+    def phase_one(self, data: str, state: dict) -> str:
+        pass
+
+    @abstractmethod
+    def phase_two(self, data: str, state: dict) -> str:
         pass
 ```
 
-Call the execute() method of the object with the string as the argument.  Like this:
+Call the phase_two() method of the object with the string as the argument.  Like this:
 
-item[3].execute(item[4], state)
+item[3].phase_two(item[6], state)
 
-- state is the dictionary passed as a parameter to execute_operations.
+- state is the dictionary passed as a parameter to operation.
 
-Test whether the output of execute() is equal to the input string set a boolian value called `changed` to be true if they are not equal.  
+Test whether the outputis equal to the input string set a boolian value called `changed` to be true if they are not equal.  
 Like this:
 
 ```python
-changed = item[3].execute_operations(item[4],state) == item[4]
+changed = item[3].execute_phase_two(item[6],state) == item[6]
 ```
 
-Output the input list with the result of execute() added to the sub-list.  
-If the input list is in the form `[m,[a,b,c,d,e,f],n]` then c is an object of type Operation and d is a string.  
-Call the output of `c.execute(d, state)` h and the changed indicator i 
-The output list shall be the list `[m,[a,b,c,d,e,f,h,i],n]`
+Output the input list with the result of phase_two() added to the sub-list.  
+If the input list is in the form `[m,[a,b,c,d,e,f,g],n]` then c is an object of type Operation and g is a string.  
+Call the output of `c.phase_two(g, state)` h and the changed indicator i 
+The output list shall be the list `[m,[a,b,c,d,e,f,g,h,i],n]`
 
 ## Write pytest to verify the functionality.
 
@@ -87,4 +93,4 @@ Do not use a class, each test should be a function.
 
 Describe any logical inconsistencies in the function specification and suggest improvements.
 
-Describe any assumptions which are not explicitly stated in the function specification.
+Describe any assumptions that are not explicitly stated in the function specification.

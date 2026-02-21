@@ -1,13 +1,13 @@
 from src.transclude.operations.uppercase import Uppercase
 
 def test_instantiation():
-    u = Uppercase()
-    assert u.type == "Uppercase"
+    op = Uppercase()
+    assert op.type == "Uppercase"
 
-def test_execute_lowercase():
-    u = Uppercase()
-    assert u.execute("hello", {}) == "HELLO"
+def test_phase_one_pass_through():
+    op = Uppercase()
+    assert op.phase_one("Hello", {}) == "Hello"
 
-def test_execute_mixed_case():
-    u = Uppercase()
-    assert u.execute("Hello World", {}) == "HELLO WORLD"
+def test_phase_two_uppercase():
+    op = Uppercase()
+    assert op.phase_two("Hello", {}) == "HELLO"

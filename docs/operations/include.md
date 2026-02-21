@@ -1,6 +1,6 @@
 ## Write a class Include
 
-In source: src/transclude/types/include.py
+In source: src/transclude/operations/include.py
 
 Inherit from an abstract pydantic V2 class Operation. 
 
@@ -14,7 +14,11 @@ class Operation(BaseModel, ABC):
     type: str = Field(..., description="Type of transclude operation")
 
     @abstractmethod
-    def execute(self, data: str, state: dict) -> str:
+    def phase_one(self, data: str, state: dict) -> str:
+        pass
+
+    @abstractmethod
+    def phase_two(self, data: str, state: dict) -> str:
         pass
 ```
 
@@ -26,7 +30,6 @@ from ..operation import Operation
 
 Implement the required fields.
 Use Literal["Include"] for Discriminator Safety.
-Implement the required methods.
 
 Include class has field:
 
@@ -40,17 +43,38 @@ Include class has field:
 Note that, the type field uses discriminator='type' in the parent class. 
 Pydantic V2 requires discriminator fields to be explicitly present in input data during instantiation
 
-Implement the execute method.
+The phase_one method 
 
-0. head and tail are optional, they both default to 0.
+1. head and tail are optional, they both default to 0.
+2. Raise a value error with message, when head+tail is greater than the number of lines in data.
+3. Let the first head number of lines of data be a
+4. Let the last tail number of lines of data be b
+5. Return the concatenation a + b.  
+6. Preserve original newline characters during reconstruction.
+
+When head=0,tail=0,data="line1\nline2\nline3\nline4\n"
+Return data=""
+When head=1,tail=1,data="line1\nline2\nline3\nline4\n"
+Return data="line1\nline4\n"
+When head=2,tail=2,data="line1\nline2\nline3\nline4\n"
+Return data="line1\nline2\nline3\nline4\n"
+
+The phase_two method
+
 1. Verify that self.source is a file path or a symbolic link.
 2. Read the content of the file, assume a uft-8 text file.
 3. Call the file content x
-4. Raise a value error with message, when head+tail is greater than the number of lines in data + 1.
-5. Let the first head number of lines of data be a
-6. Let the last tail number of lines of data be b
-7. Return the concatinated the file content c = a + x + b.  
-8. Preserve original newline characters during reconstruction.
+4. Let the first head number of lines of data be a
+5. Let the last tail number of lines of data be b
+6. Return the concatenation a + x + b.  
+7. Preserve original newline characters during reconstruction.
+
+When head=0,tail=0,data="line1\nline2\nline3\nline4\n",file content="xxx"
+Return data="xxx"
+When head=1,tail=1,data="line1\nline2\nline3\nline4\n",file content="xxx"
+Return data="line1\nxxxline4\n"
+When head=2,tail=2,data="line1\nline2\nline3\nline4\n",file content="xxx"
+Return data="line1\nline2\nxxxline3\nline4\n"
 
 ## Write pytest to verify the functionality.
 

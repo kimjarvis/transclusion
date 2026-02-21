@@ -1,7 +1,7 @@
-from typing import Any, Tuple, List
+from typing import Any, Tuple
 
 
-def reassemble_document(x: List[Any], open_delimiter: str = "{{", close_delimiter: str = "}}") -> Tuple[bool, str]:
+def reassemble_document(x: list[Any], open_delimiter: str = "{{", close_delimiter: str = "}}") -> Tuple[bool, str]:
     changed = False
     output = []
 
@@ -9,34 +9,30 @@ def reassemble_document(x: List[Any], open_delimiter: str = "{{", close_delimite
         if isinstance(item, str):
             output.append(item)
         elif isinstance(item, list):
-            if len(item) != 8:
-                raise ValueError("Inner list length must be exactly 8")
+            if len(item) != 9:
+                raise ValueError("List length must be 9")
 
             output.append(open_delimiter)
-
             if not isinstance(item[0], str):
-                raise ValueError("Item at index 0 must be a string")
+                raise ValueError("Index 0 must be string")
             output.append(item[0])
-
             output.append(close_delimiter)
 
-            if not isinstance(item[6], str):
-                raise ValueError("Item at index 6 must be a string")
-            output.append(item[6])
+            if not isinstance(item[7], str):
+                raise ValueError("Index 7 must be string")
+            output.append(item[7])
 
             output.append(open_delimiter)
-
             if not isinstance(item[4], str):
-                raise ValueError("Item at index 4 must be a string")
+                raise ValueError("Index 4 must be string")
             output.append(item[4])
-
             output.append(close_delimiter)
 
-            if not isinstance(item[7], bool):
-                raise ValueError("Item at index 7 must be a boolean")
-            if item[7]:
+            if not isinstance(item[8], bool):
+                raise ValueError("Index 8 must be bool")
+            if item[8]:
                 changed = True
         else:
-            raise ValueError("Top-level items must be string or list")
+            raise ValueError("Invalid item type")
 
     return changed, "".join(output)

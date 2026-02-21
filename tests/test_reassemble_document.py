@@ -1,21 +1,21 @@
 import pytest
 from src.transclude.reassemble_document import reassemble_document
 
-@pytest.mark.parametrize("input_data,expected", [
-    (["m", ["a", "b", "c", "d", "e", "g", "h", True], "n"], (True, "m{{a}}h{{e}}n")),
-    (["x", ["1", "2", "3", "4", "5", "6", "7", False]], (False, "x{{1}}7{{5}}")),
+@pytest.mark.parametrize("data, expected", [
+    (["m", ["a","b","c","d","e","g","h","i",True], "n"], (True, "m{{a}}i{{e}}n")),
+    (["x", ["1","2","3","4","5","6","7","8",False], "y"], (False, "x{{1}}8{{5}}y")),
 ])
-def test_reassemble_document_success(input_data, expected):
-    assert reassemble_document(input_data) == expected
+def test_valid_reassembly(data, expected):
+    assert reassemble_document(data) == expected
 
-@pytest.mark.parametrize("input_data,error_msg", [
-    (["a", ["short"]], "Inner list length must be exactly 8"),
-    (["a", [1, "b", "c", "d", "e", "g", "h", True]], "Item at index 0 must be a string"),
-    (["a", ["a", "b", "c", "d", "e", "g", 6, True]], "Item at index 6 must be a string"),
-    (["a", ["a", "b", "c", "d", 4, "g", "h", True]], "Item at index 4 must be a string"),
-    (["a", ["a", "b", "c", "d", "e", "g", "h", "True"]], "Item at index 7 must be a boolean"),
-    (["a", 123], "Top-level items must be string or list"),
+@pytest.mark.parametrize("data, msg", [
+    (["a", ["short"], "b"], "List length must be 9"),
+    (["a", [1]*9, "b"], "Index 0 must be string"),
+    (["a", ["a","b","c","d","e","g","h",1,True], "b"], "Index 7 must be string"),
+    (["a", ["a","b","c","d",1,"g","h","i",True], "b"], "Index 4 must be string"),
+    (["a", ["a","b","c","d","e","g","h","i","1"], "b"], "Index 8 must be bool"),
+    (["a", 123, "b"], "Invalid item type"),
 ])
-def test_reassemble_document_errors(input_data, error_msg):
-    with pytest.raises(ValueError, match=error_msg):
-        reassemble_document(input_data)
+def test_invalid_inputs(data, msg):
+    with pytest.raises(ValueError, match=msg):
+        reassemble_document(data)

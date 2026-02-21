@@ -18,9 +18,16 @@ class Operation(BaseModel, ABC):
     type: str = Field(..., description="Type of transclude operation")
 
     @abstractmethod
-    def execute(self, data: str, state: dict) -> str:
+    def phase_one(self, data: str, state: dict) -> str:
         pass
+
+    @abstractmethod
+    def phase_two(self, data: str, state: dict) -> str:
+        pass
+
 ```
+
+There are two abstract methods, phase_one and phase_two, that must be implemented by all children.
 
 - Support Pydantic V2 automatic deserialization
 - The descrimintor is the type field.

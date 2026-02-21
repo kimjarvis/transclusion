@@ -3,7 +3,8 @@ from .parse_delimiters import parse_delimiters
 from .isolate_blocks import isolate_blocks
 from .blocks_to_dictionaries import blocks_to_dictionaries
 from .dictionaries_to_operations import Registry
-from .execute_operations import execute_operations
+from .execute_phase_one import execute_phase_one
+from .execute_phase_two import execute_phase_two
 from .reassemble_document import reassemble_document
 from .state_dictionary import State_dictionary
 
@@ -21,5 +22,6 @@ class Transclude(Registry, State_dictionary):
         blocks = isolate_blocks(parsed)
         chunks = blocks_to_dictionaries(blocks)
         validated = self.dictionaries_to_operations(chunks)
-        executed = execute_operations(validated, self.state)
+        phase_one = execute_phase_one(validated, self.state)
+        executed = execute_phase_two(phase_one, self.state)
         return reassemble_document(executed, self.open_delimiter, self.close_delimiter)

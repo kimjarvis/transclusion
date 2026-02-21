@@ -8,7 +8,7 @@ def main():
     t.register("Include", Include)
     c, x = t.render("""
 
-# {{ "type": "Include", "source": "example.txt", "head": 2, "tail": 1 }}
+# {{ "type": "Include", "source": "example.txt", "head": 2, "tail": 2 }}
 ```python
 ```
 # {{ }}    

@@ -23,7 +23,8 @@ render method body:
         blocks = isolate_blocks(parsed)
         chunks = blocks_to_dictionaries(blocks)
         validated = self.dictionaries_to_operations(chunks)
-        executed = execute_operations(validated, self.state)
+        phase_one = execute_phase_one(validated, self.state)
+        executed = execute_phase_two(phase_one, self.state)
         return reassemble_document(executed, self.open_delimiter, self.close_delimiter)
 ```
 
@@ -32,12 +33,13 @@ Note that reassemble_document returns tuple[bool, str]
 Imports
 
 ```python
-from src.transclude.ensure_balanced_delimiters import ensure_balanced_delimiters
-from src.transclude.parse_delimiters import parse_delimiters
-from src.transclude.isolate_blocks import isolate_blocks
-from src import blocks_to_dictionaries
-from src import Registry
-from src.transclude.execute_operations import execute_operations
-from src.transclude.reassemble_document import reassemble_document
-from src.transclude.state_dictionary import State_dictionary
+from .ensure_balanced_delimiters import ensure_balanced_delimiters
+from .parse_delimiters import parse_delimiters
+from .isolate_blocks import isolate_blocks
+from .blocks_to_dictionaries import blocks_to_dictionaries
+from .dictionaries_to_operations import Registry
+from .execute_phase_one import execute_phase_one
+from .execute_phase_two import execute_phase_two
+from .reassemble_document import reassemble_document
+from .state_dictionary import State_dictionary
 ```
