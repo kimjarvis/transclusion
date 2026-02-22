@@ -1,5 +1,7 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict, Any
+from pathlib import Path
 from pydantic import Field, model_validator
+
 from ..operation import Operation
 
 
@@ -11,30 +13,27 @@ class Source(Operation):
     tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
 
     @model_validator(mode='after')
-    def validate_xor(self):
-        if not self.file and not self.key:
-            raise ValueError("Either 'file' or 'key' must be specified")
-        if self.file and self.key:
-            raise ValueError("'file' and 'key' are mutually exclusive")
+    def validate_xor(self) -> 'Source':
+        if (self.file is None) == (self.key is None):
+            raise ValueError("Exactly one of 'file' or 'key' must be specified")
         return self
 
-    def phase_one(self, data: str, state: dict) -> str:
-        lines = data.splitlines()
+    def phase_one(self, data: str, state: Dict[str, Any]) -> str:
+        lines = data.splitlines(keepends=True)
 
         if self.head:
             lines = lines[self.head:]
         if self.tail:
-            lines = lines[:-self.tail]
+            lines = lines[:-self.tail] if self.tail < len(lines) else []
 
-        result = "\n".join(lines)
+        trimmed = "".join(lines)
 
         if self.file:
-            with open(self.file, 'w', encoding='utf-8') as f:
-                f.write(result)
+            Path(self.file).write_text(trimmed, encoding='utf-8')
         elif self.key:
-            state[self.key] = result
+            state[self.key] = trimmed
 
-        return result
+        return data
 
-    def phase_two(self, data: str, state: dict) -> str:
+    def phase_two(self, data: str, state: Dict[str, Any]) -> str:
         return data

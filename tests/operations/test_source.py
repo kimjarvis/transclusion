@@ -1,57 +1,45 @@
-import os
-import tempfile
+import pytest
+from pathlib import Path
 from src.transclude.operations.source import Source
 
 
-def test_source_head():
-    src = Source(type="Source", key="test", head=1)
-    data = "line1\nline2\nline3"
+def test_source_write_file(tmp_path):
+    file_path = tmp_path / "output.txt"
+    op = Source(type="Source", file=str(file_path))
+    data = "line1\nline2\nline3\n"
+    result = op.phase_one(data, {})
+
+    assert result == data
+    assert file_path.read_text() == data
+
+
+def test_source_write_state():
+    op = Source(type="Source", key="output")
+    data = "line1\nline2\n"
     state = {}
-    result = src.phase_one(data, state)
-    assert result == "line2\nline3"
-    assert state["test"] == "line2\nline3"
+    result = op.phase_one(data, state)
+
+    assert result == data
+    assert state["output"] == data
 
 
-def test_source_tail():
-    src = Source(type="Source", key="test", tail=1)
-    data = "line1\nline2\nline3"
-    state = {}
-    result = src.phase_one(data, state)
-    assert result == "line1\nline2"
+def test_source_head_tail(tmp_path):
+    file_path = tmp_path / "trimmed.txt"
+    op = Source(type="Source", file=str(file_path), head=1, tail=1)
+    data = "line1\nline2\nline3\nline4\n"
+    op.phase_one(data, {})
+
+    assert file_path.read_text() == "line2\nline3\n"
 
 
-def test_source_file_write():
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as tmp:
-        path = tmp.name
+def test_source_xor_violation():
+    with pytest.raises(ValueError):
+        Source(type="Source", file="path", key="key")
 
-    try:
-        src = Source(type="Source", file=path)
-        data = "content"
-        state = {}
-        src.phase_one(data, state)
-
-        with open(path, 'r', encoding='utf-8') as f:
-            assert f.read() == "content"
-    finally:
-        os.unlink(path)
-
-
-def test_source_validation_missing():
-    try:
+    with pytest.raises(ValueError):
         Source(type="Source")
-        assert False, "Should raise ValueError"
-    except ValueError:
-        pass
 
 
-def test_source_validation_both():
-    try:
-        Source(type="Source", file="x", key="y")
-        assert False, "Should raise ValueError"
-    except ValueError:
-        pass
-
-
-def test_source_phase_two():
-    src = Source(type="Source", key="test")
-    assert src.phase_two("data", {}) == "data"
+def test_phase_two():
+    op = Source(type="Source", key="test")
+    assert op.phase_two("data", {}) == "data"

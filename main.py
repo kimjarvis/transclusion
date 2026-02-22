@@ -22,10 +22,10 @@ line 3
 # {{ }}    
 
     """)
-    print(x)
+    print(f"x:{x}")
     print(f"Changed:{c}")
     c1, y= t.render(x)
-    print(y)
+    print(f"y:{y}")
     print(f"Changed:{c1}")
     print(f"Idempotent:{x==y}")
     print(f"state: {t.state}")

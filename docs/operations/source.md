@@ -49,14 +49,15 @@ Use Pydantic V2 to ensure:
 
 The phase_one method 
 
-1. Remove self.head number of lines from the beginning of data.
-2. Remove self.tail number of lines from the end.
-3. If file is specified write the resulting string to the file specified by self.file.
-4. If key is specified write the resulting string to the dictionary state `state[self.key] = data`
+1. Trim self.head number of lines from the beginning of data.
+2. Trim self.tail number of lines from the end.
+3. If file is specified write the trimmed string to the file specified by self.file.
+4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
+5. Return the value of data unchanged.
 
 The phase_two method
 
-1. Return data.
+1. Return the value of data unchanged.
 
 ## Write pytest to verify the functionality.
 
