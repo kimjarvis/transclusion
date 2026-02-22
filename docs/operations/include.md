@@ -35,13 +35,17 @@ Include class has field:
 
 ```python
     type: Literal["Include"] = Field(default="Include", init=False)
-    source: str = Field(..., description="File path to include")
+    file: Optional[str] = Field(..., description="File path to read")
+    key: Optional[str] = Field(..., description="Dictionary key to read")    
     head: Optional[int] = Field(description="Number of lines from the beginning to retain")
     tail: Optional[int] = Field(description="Number of lines from the end to retain")
 ```
 
 Note that, the type field uses discriminator='type' in the parent class. 
 Pydantic V2 requires discriminator fields to be explicitly present in input data during instantiation
+
+Use Pydantic V2 to ensure:
+- File and key are mutually exclusive parameters.  One of them must be specified.
 
 The phase_one method 
 
@@ -61,9 +65,9 @@ Return data="line1\nline2\nline3\nline4\n"
 
 The phase_two method
 
-1. Verify that self.source is a file path or a symbolic link.
-2. Read the content of the file, assume a uft-8 text file.
-3. Call the file content x
+1. If self.file is specified verify that the value is a file path or a symbolic link. 
+2. Read the content of the file, assume a uft-8 text file into the string x.
+3. If self.key is specified, verify that the value is a dictionary key in state.  Let x=state[self.key]
 4. Let the first head number of lines of data be a
 5. Let the last tail number of lines of data be b
 6. Return the concatenation a + x + b.  

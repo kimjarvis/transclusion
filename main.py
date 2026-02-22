@@ -9,10 +9,18 @@ def main():
     t.register("Include", Include)
     t.register("Source", Source)
     c, x = t.render("""
-# {{ "type": "Include", "source": "example.txt", "head": 2, "tail": 2 }}
+
+# {{ "type": "Include", "key": "example", "head": 2, "tail": 2 }}
 ```python
 ```
 # {{ }}    
+
+# {{ "type": "Source", "key": "example", "head": 1, "tail": 1 }}
+line 1
+line 2
+line 3
+# {{ }}    
+
     """)
     print(x)
     print(f"Changed:{c}")
@@ -20,16 +28,7 @@ def main():
     print(y)
     print(f"Changed:{c1}")
     print(f"Idempotent:{x==y}")
-
-    c, x = t.render("""
-# {{ "type": "Source", "key": "example1.txt", "head": 1, "tail": 1 }}
-line 1
-line 2
-line 3
-# {{ }}    
-    """)
     print(f"state: {t.state}")
-
 
 if __name__ == "__main__":
     main()

@@ -1,36 +1,54 @@
-from typing import Literal, Optional
-from pathlib import Path
-from pydantic import Field
+import os
+from typing import Optional, Literal
+from pydantic import Field, model_validator
 from ..operation import Operation
 
 
 class Include(Operation):
     type: Literal["Include"] = Field(default="Include")
-    source: str = Field(..., description="File path to include")
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
+    file: Optional[str] = Field(None, description="File path to read")
+    key: Optional[str] = Field(None, description="Dictionary key to read")
+    head: Optional[int] = Field(None, description="Number of lines from the beginning to retain")
+    tail: Optional[int] = Field(None, description="Number of lines from the end to retain")
 
-    def _slice_data(self, data: str) -> tuple[str, str]:
-        h = self.head or 0
-        t = self.tail or 0
-        lines = data.splitlines(keepends=True)
+    @model_validator(mode='after')
+    def validate_file_key_xor(self):
+        if (self.file is None) == (self.key is None):
+            raise ValueError("Exactly one of 'file' or 'key' must be specified")
+        return self
 
-        if h + t > len(lines):
-            raise ValueError("head + tail cannot exceed number of lines")
+    def _get_lines(self, data: str) -> list[str]:
+        return data.splitlines(keepends=True)
 
-        a = "".join(lines[:h])
-        b = "".join(lines[-t:]) if t > 0 else ""
+    def _slice_data(self, data: str, head: int, tail: int) -> tuple[str, str]:
+        lines = self._get_lines(data)
+        count = len(lines)
+        if head + tail > count:
+            raise ValueError(f"head ({head}) + tail ({tail}) exceeds number of lines ({count})")
+
+        a = "".join(lines[:head])
+        b = "".join(lines[-tail:]) if tail > 0 else ""
         return a, b
 
     def phase_one(self, data: str, state: dict) -> str:
-        a, b = self._slice_data(data)
+        head = self.head or 0
+        tail = self.tail or 0
+        a, b = self._slice_data(data, head, tail)
         return a + b
 
     def phase_two(self, data: str, state: dict) -> str:
-        path = Path(self.source)
-        if not (path.is_file() or path.is_symlink()):
-            raise ValueError(f"Source {self.source} is not a file or symbolic link")
+        head = self.head or 0
+        tail = self.tail or 0
 
-        x = path.read_text(encoding="utf-8")
-        a, b = self._slice_data(data)
+        if self.file:
+            if not os.path.isfile(self.file):
+                raise ValueError(f"File path or symbolic link expected: {self.file}")
+            with open(self.file, 'r', encoding='utf-8') as f:
+                x = f.read()
+        else:
+            if self.key not in state:
+                raise ValueError(f"Key '{self.key}' not found in state")
+            x = state[self.key]
+
+        a, b = self._slice_data(data, head, tail)
         return a + x + b

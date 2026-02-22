@@ -1,34 +1,46 @@
 import pytest
-from pathlib import Path
 from src.transclude.operations.include import Include
 
-
-def test_phase_one_head_tail_zero():
-    inc = Include(type="Include", source="dummy.txt")
-    assert inc.phase_one("line1\nline2\n", {}) == ""
-
-
-def test_phase_one_head_tail_split():
-    inc = Include(type="Include", source="dummy.txt", head=1, tail=1)
-    assert inc.phase_one("line1\nline2\nline3\nline4\n", {}) == "line1\nline4\n"
-
-
-def test_phase_one_head_tail_overlap_error():
-    inc = Include(type="Include", source="dummy.txt", head=3, tail=3)
+def test_include_validation_mutual_exclusion():
     with pytest.raises(ValueError):
-        inc.phase_one("line1\nline2\n", {})
+        Include(type="Include", head=1)
+    with pytest.raises(ValueError):
+        Include(type="Include", file="a.txt", key="b")
 
-
-def test_phase_two_file_insertion(tmp_path):
-    file_path = tmp_path / "content.txt"
-    file_path.write_text("xxx", encoding="utf-8")
-
-    inc = Include(type="Include", source=str(file_path), head=1, tail=1)
+def test_include_phase_one_trim():
+    op = Include(type="Include", file="dummy", head=1, tail=1)
     data = "line1\nline2\nline3\nline4\n"
-    assert inc.phase_two(data, {}) == "line1\nxxxline4\n"
+    assert op.phase_one(data, {}) == "line1\nline4\n"
 
+def test_include_phase_one_empty():
+    op = Include(type="Include", file="dummy", head=0, tail=0)
+    data = "line1\nline2\nline3\nline4\n"
+    assert op.phase_one(data, {}) == ""
 
-def test_phase_two_invalid_source():
-    inc = Include(type="Include", source="/nonexistent/path", head=0, tail=0)
+def test_include_phase_one_error():
+    op = Include(type="Include", file="dummy", head=3, tail=3)
+    data = "line1\nline2\n"
     with pytest.raises(ValueError):
-        inc.phase_two("data", {})
+        op.phase_one(data, {})
+
+def test_include_phase_two_file_injection(tmp_path):
+    file = tmp_path / "test.txt"
+    file.write_text("xxx")
+    op = Include(type="Include", file=str(file), head=1, tail=1)
+    data = "line1\nline2\nline3\nline4\n"
+    assert op.phase_two(data, {}) == "line1\nxxxline4\n"
+
+def test_include_phase_two_key_injection():
+    op = Include(type="Include", key="content", head=0, tail=0)
+    data = "line1\nline2\n"
+    assert op.phase_two(data, {"content": "yyy"}) == "yyy"
+
+def test_include_phase_two_missing_key():
+    op = Include(type="Include", key="missing", head=0, tail=0)
+    with pytest.raises(ValueError):
+        op.phase_two("data", {})
+
+def test_include_phase_two_missing_file():
+    op = Include(type="Include", file="/nonexistent", head=0, tail=0)
+    with pytest.raises(ValueError):
+        op.phase_two("data", {})
