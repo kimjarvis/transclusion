@@ -4,13 +4,16 @@ from pydantic import Field, model_validator
 
 from ..operation import Operation
 
-
 class Source(Operation):
+    # init=False removed to allow explicit type="Source" in instantiation
     type: Literal["Source"] = Field(default="Source")
     file: Optional[str] = Field(default=None, description="File path to write")
     key: Optional[str] = Field(default=None, description="Dictionary key to write")
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
+    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to skip")
+    tail: Optional[int] = Field(default=None, description="Number of lines from the end to skip")
+    strip: Optional[str] = Field(default=None, description="Strip characters from the beginning and end")
+    lstrip: Optional[str] = Field(default=None, description="Strip characters from the beginning")
+    rstrip: Optional[str] = Field(default=None, description="Strip characters from the end")
 
     @model_validator(mode='after')
     def validate_xor(self) -> 'Source':
@@ -26,12 +29,19 @@ class Source(Operation):
         if self.tail:
             lines = lines[:-self.tail] if self.tail < len(lines) else []
 
-        trimmed = "".join(lines)
+        processed = "".join(lines)
+
+        if self.strip:
+            processed = processed.strip()
+        if self.lstrip:
+            processed = processed.lstrip(self.lstrip)
+        if self.rstrip:
+            processed = processed.rstrip(self.rstrip)
 
         if self.file:
-            Path(self.file).write_text(trimmed, encoding='utf-8')
+            Path(self.file).write_text(processed, encoding='utf-8')
         elif self.key:
-            state[self.key] = trimmed
+            state[self.key] = processed
 
         return data
 

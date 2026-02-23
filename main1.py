@@ -24,7 +24,7 @@ def fib(n):
     return a
 
 def test_fib():
-    # {{ "type": "Source", "key": "example", "head": 1, "tail": 1 }}
+    # {{ "type": "Source", "key": "example", "head": 1, "tail": 1, "strip": "\\n" }}
     assert fib(6) == 8 
     # {{ }}    
 ''')

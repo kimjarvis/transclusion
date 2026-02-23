@@ -37,8 +37,8 @@ Source class has field:
     type: Literal["Source"] = Field(default="Source", init=False)
     file: Optional[str] = Field(..., description="File path to write")
     key: Optional[str] = Field(..., description="Dictionary key to write")    
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
+    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to skip")
+    tail: Optional[int] = Field(default=None, description="Number of lines from the end to skip")
     strip: Optional[str] = Field(default=None, description="Stip characters from the beginning and end")
     lstrip: Optional[str] = Field(default=None, description="Stip characters from the beginning")
     rstrip: Optional[str] = Field(default=None, description="Stip characters from the end")
@@ -54,9 +54,9 @@ The phase_one method
 
 1. Trim self.head number of lines from the beginning of data and pass to the next step.
 2. Trim self.tail number of lines from the end and pass to the next step.
-3. Run strip() on the trimmed string and pass to the next step.
-4. Run lstrip() on the trimmed string and pass to the next step.
-5. Run rstrip() on the trimmed string and pass to the next step.
+3. Run strip() on the trimmed string and pass to the next step.  If self.strip=="" then run strip().
+4. Run lstrip() on the trimmed string and pass to the next step.  If self.strip=="" then run lstrip().
+5. Run rstrip() on the trimmed string and pass to the next step.  If self.strip=="" then run rstrip().
 3. If file is specified write the trimmed string to the file specified by self.file.
 4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
 5. Return the value of data unchanged.
@@ -64,6 +64,14 @@ The phase_one method
 The phase_two method
 
 1. Return the value of data unchanged.
+
+## Assumptions
+
+Make these assumptions:
+
+- Line Endings: splitlines(keepends=True) preserves newline characters during slicing.
+- Strip Behavior: strip methods treat the argument as a set of characters to remove, not a substring.
+- Zero Values: head=0 or tail=0 are treated as falsy (no operation).
 
 ## Write pytest to verify the functionality.
 
