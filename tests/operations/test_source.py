@@ -54,37 +54,6 @@ def test_source_validation_both():
     with pytest.raises(ValueError):
         Source(type="Source", file="x", key="y")
 
-import pytest
-from pathlib import Path
-from src.transclude.operations.source import Source
-
-@pytest.mark.parametrize(
-    "strip,lstrip,rstrip,data,expected",
-    [
-        # Individual strip
-        (" ", None, None, "  content  ", "content"),
-        (None, " ", None, "  content  ", "content  "),
-        (None, None, " ", "  content  ", "  content"),
-        # Combined chain
-        (" ", "c", "t", "  content  ", "onten"),
-        # No stripping
-        (None, None, None, "  content  ", "  content  "),
-        # Specific characters
-        ("xyz", None, None, "xyzcontentxyz", "content"),
-    ]
-)
-def test_source_strip_variations(strip, lstrip, rstrip, data, expected):
-    op = Source(
-        type="Source",
-        key="out",
-        strip=strip,
-        lstrip=lstrip,
-        rstrip=rstrip
-    )
-    state = {}
-    op.phase_one(data, state)
-    assert state["out"] == expected
-
 def test_source_head_tail(tmp_path):
     file_path = tmp_path / "trimmed.txt"
     op = Source(type="Source", file=str(file_path), head=1, tail=1)
@@ -98,3 +67,23 @@ def test_source_validation_xor():
         Source(type="Source", head=1)
     with pytest.raises(ValueError):
         Source(type="Source", file="x", key="y")
+
+@pytest.mark.parametrize(
+    "strip,lstrip,rstrip,data,expected",
+    [
+        (None, None, None, "  content  ", "  content  "),
+        (" ", None, None, "  content  ", "content"),
+        ("", None, None, "  content  ", "content"),
+        (None, " ", None, "  content  ", "content  "),
+        (None, "", None, "  content  ", "content  "),
+        (None, None, " ", "  content  ", "  content"),
+        (None, None, "", "  content  ", "  content"),
+        (" ", "c", "t", "  content  ", "onten"),
+    ]
+)
+def test_source_strip_variations(strip, lstrip, rstrip, data, expected):
+    op = Source(type="Source", key="out", strip=strip, lstrip=lstrip, rstrip=rstrip)
+    state = {}
+    op.phase_one(data, state)
+    assert state["out"] == expected
+

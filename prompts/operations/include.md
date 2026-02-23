@@ -22,6 +22,8 @@ class Operation(BaseModel, ABC):
         pass
 ```
 
+When overridng the methods use the same parameter names, data and state.
+
 Operation is defined in src/transclude/operation.py.  It can be imported like this:
 
 ```python
@@ -39,6 +41,8 @@ Include class has field:
     key: Optional[str] = Field(..., description="Dictionary key to read")    
     head: Optional[int] = Field(description="Number of lines from the beginning to retain")
     tail: Optional[int] = Field(description="Number of lines from the end to retain")
+    prefix: Optional[str] = Field(description="String to insert before data")
+    suffix: Optional[str] = Field(description="String to insert after data")
 ```
 
 Note that, the type field uses discriminator='type' in the parent class. 
@@ -50,7 +54,7 @@ Use Pydantic V2 to ensure:
 The phase_one method 
 
 1. head and tail are optional, they both default to 0.
-2. Raise a value error with message, when head+tail is greater than the number of lines in data.
+2. Raise a value error with message, when head+tail is greater than or equal to the number of lines in data.
 3. Let the first head number of lines of data be a
 4. Let the last tail number of lines of data be b
 5. Return the concatenation a + b.  
@@ -70,7 +74,7 @@ The phase_two method
 3. If self.key is specified, verify that the value is a dictionary key in state.  Let x=state[self.key]
 4. Let the first head number of lines of data be a
 5. Let the last tail number of lines of data be b
-6. Return the concatenation a + x + b.  
+6. Return the concatenation a + prefix + x + suffix + b.  
 7. Preserve original newline characters during reconstruction.
 
 When head=0,tail=0,data="line1\nline2\nline3\nline4\n",file content="xxx"

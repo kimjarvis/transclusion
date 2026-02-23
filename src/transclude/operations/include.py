@@ -22,6 +22,7 @@ class Include(Operation):
 
     def _slice_data(self, data: str, head: int, tail: int) -> tuple[str, str]:
         lines = self._get_lines(data)
+        print(lines)
         count = len(lines)
         if head + tail > count:
             raise ValueError(f"head ({head}) + tail ({tail}) exceeds number of lines ({count})")

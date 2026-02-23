@@ -5,7 +5,7 @@ from pydantic import Field, model_validator
 from ..operation import Operation
 
 class Source(Operation):
-    # init=False removed to allow explicit type="Source" in instantiation
+    # init=False removed to allow explicit type="Source" instantiation required by tests
     type: Literal["Source"] = Field(default="Source")
     file: Optional[str] = Field(default=None, description="File path to write")
     key: Optional[str] = Field(default=None, description="Dictionary key to write")
@@ -21,7 +21,7 @@ class Source(Operation):
             raise ValueError("Exactly one of 'file' or 'key' must be specified")
         return self
 
-    def phase_one(self, data: str, state: Dict[str, Any]) -> str:
+    def phase_one(self, data: str, state: dict) -> str:
         lines = data.splitlines(keepends=True)
 
         if self.head:
@@ -31,12 +31,12 @@ class Source(Operation):
 
         processed = "".join(lines)
 
-        if self.strip:
-            processed = processed.strip()
-        if self.lstrip:
-            processed = processed.lstrip(self.lstrip)
-        if self.rstrip:
-            processed = processed.rstrip(self.rstrip)
+        if self.strip is not None:
+            processed = processed.strip() if self.strip == "" else processed.strip(self.strip)
+        if self.lstrip is not None:
+            processed = processed.lstrip() if self.lstrip == "" else processed.lstrip(self.lstrip)
+        if self.rstrip is not None:
+            processed = processed.rstrip() if self.rstrip == "" else processed.rstrip(self.rstrip)
 
         if self.file:
             Path(self.file).write_text(processed, encoding='utf-8')
@@ -45,5 +45,5 @@ class Source(Operation):
 
         return data
 
-    def phase_two(self, data: str, state: Dict[str, Any]) -> str:
+    def phase_two(self, data: str, state: dict) -> str:
         return data
