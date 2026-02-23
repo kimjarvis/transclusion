@@ -39,6 +39,9 @@ Source class has field:
     key: Optional[str] = Field(..., description="Dictionary key to write")    
     head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
     tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
+    strip: Optional[str] = Field(default=None, description="Stip characters from the beginning and end")
+    lstrip: Optional[str] = Field(default=None, description="Stip characters from the beginning")
+    rstrip: Optional[str] = Field(default=None, description="Stip characters from the end")
 ```
 
 Note that, the type field uses discriminator='type' in the parent class. 
@@ -49,8 +52,11 @@ Use Pydantic V2 to ensure:
 
 The phase_one method 
 
-1. Trim self.head number of lines from the beginning of data.
-2. Trim self.tail number of lines from the end.
+1. Trim self.head number of lines from the beginning of data and pass to the next step.
+2. Trim self.tail number of lines from the end and pass to the next step.
+3. Run strip() on the trimmed string and pass to the next step.
+4. Run lstrip() on the trimmed string and pass to the next step.
+5. Run rstrip() on the trimmed string and pass to the next step.
 3. If file is specified write the trimmed string to the file specified by self.file.
 4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
 5. Return the value of data unchanged.
