@@ -41,9 +41,8 @@ Source class has field:
     key: Optional[str] = Field(..., description="Dictionary key to write")    
     head: Optional[int] = Field(default=None, description="Number of lines from the beginning to skip")
     tail: Optional[int] = Field(default=None, description="Number of lines from the end to skip")
-    strip: Optional[str] = Field(default=None, description="Stip characters from the beginning and end")
-    lstrip: Optional[str] = Field(default=None, description="Stip characters from the beginning")
-    rstrip: Optional[str] = Field(default=None, description="Stip characters from the end")
+    front: Optional[int] = Field(default=None, description="Number of characters from the beginning to skip")
+    back: Optional[int] = Field(default=None, description="Number of characters from the end to skip")
 ```
 
 Note that, the type field uses discriminator='type' in the parent class. 
@@ -52,15 +51,21 @@ Pydantic V2 requires discriminator fields to be explicitly present in input data
 Use Pydantic V2 to ensure:
 - File and key are mutually exclusive parameters.  One of them must be specified.
 
+The function split is defined in src/transclude/split.py.  It can be imported like this:
+
+```python
+from ..split import split
+```
+
+```python
+def split(text: str, head: int, front: int, back: int, tail: int) -> Tuple[str, str, str]:
+```
+
 The phase_one method 
 
-1. Trim self.head number of lines from the beginning of the argument "data" and pass to the next step.
-2. Trim self.tail number of lines from the end and pass to the next step.
-3. Run strip(self.strip) on the trimmed string and pass to the next step.  If self.strip=="" then run strip().
-4. Run lstrip(self.lstrip) on the trimmed string and pass to the next step.  If self.lstrip=="" then run lstrip().
-5. Run rstrip(self.rstrip) on the trimmed string and pass to the next step.  If self.rstrip=="" then run rstrip().
-3. If file is specified write the trimmed string to the file specified by self.file.
-4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
+1. Call split to the argument string data into strings a,b,c.
+3. If file is specified write the string 'b' to the file specified by self.file.
+4. If key is specified write the string 'b' to the dictionary state `state[self.key] = b`
 5. Return the value of the argument string data unchanged.
 
 The phase_two method
@@ -72,14 +77,14 @@ The phase_two method
 Make these assumptions:
 
 - Line Endings: splitlines(keepends=True) preserves newline characters during slicing.
-- Strip Behavior: strip methods treat the argument as a set of characters to remove, not a substring.
-- Zero Values: head=0 or tail=0 are treated as falsy (no operation).
 
 ## Write pytest to verify the functionality.
 
 - Pytests should be in a separate file. 
 - Do not define a test class.  
 - Tests should be individual functions.
+- Verify the error conditions.
+- Create concise tests using `@pytest.mark.parametrize` 
 
 Explicitly pass type="Source" when instantiating Source in tests.
 
@@ -88,3 +93,50 @@ Explicitly pass type="Source" when instantiating Source in tests.
 Describe any logical inconsistencies in the function specification and suggest improvements.
 
 Describe any assumptions that are not explicitly stated in the function specification.
+
+
+## Refernce 
+
+These tests pass.  They illustrate the split function:
+
+```python
+import pytest
+from src.transclude.split import split
+
+@pytest.mark.parametrize("text,head,front,back,tail", [
+    ("line1\nline2\nline3\n", 1, 1, 1, 1),
+    ("a\nb\n", 0, 0, 0, 0),
+    ("", 0, 0, 0, 0),
+    ("x\ny\nz\n", 1, 0, 0, 1),
+])
+def test_concatenation(text, head, front, back, tail):
+    h, m, t = split(text, head, front, back, tail)
+    assert h + m + t == text
+
+def test_all_zeros():
+    text = "original"
+    h, m, t = split(text, 0, 0, 0, 0)
+    assert h == ""
+    assert m == text
+    assert t == ""
+
+def test_specific_example():
+    text = "line1\nline2\nline3\n"
+    h, m, t = split(text, 1, 1, 1, 1)
+    assert h == "line1\nl"
+    assert m == "ine2"
+    assert t == "\nline3\n"
+
+@pytest.mark.parametrize("text,head,front,back,tail", [
+    ("a\n", 2, 0, 0, 0),
+    ("abc", 0, 4, 0, 0),
+    ("abc", 0, 0, 4, 0),
+    ("abc", 0, 2, 2, 0),
+    ("a\nb\n", 1, 1, 0, 1),
+])
+def test_errors(text, head, front, back, tail):
+    with pytest.raises(ValueError):
+        split(text, head, front, back, tail)
+```
+
+

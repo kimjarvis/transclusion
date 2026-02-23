@@ -1,34 +1,67 @@
-## Write a single function to perform the task.
-
-Source file: src/transclude/split.py
+# Write a single function to perform the task.
 
 Function signature:
 
 ```python
-def split(lines: list(str), head: int, front: int, back: int, tail: int) -> Tuple[list[str],list[str],list[str]]
+def split(text: str, head: int, front: int, back: int, tail: int) -> Tuple[str,str,str]
 ```
 
-Expected behavior:
+Use dataclasses or named tuples for the return type to make the result self-documenting:
 
-The list of lines is split into three parts.
+```python
+from typing import NamedTuple
+class TextSplit(NamedTuple):
+    first: str
+    middle: str
+    last: str
+```
 
-Return
-1. A list containing the first "head" items in lines and an additional item.  This item is a substring containing the first "front" characters of the next item.
-2. A list containing the last "tail" item in lines with an item added at the front.  This item is a substring containing the last "back" characters of the previous item.
-3. A list containing the middle items in lines. 
+Source file: src/transclude/split.py
 
-Raise value errors with a message:
-- When there are not enough lines to perform the split. 
-- When there are not enough characters in the line to extract the front and back.
-- When the messages head and front overlap the back and the tail. 
+# Expected behavior:
+
+The string text is split into three parts: first, middle, and last and returned in a tuple.
+When head is not zero, the first part contains the first "head" lines of text followed by "front" characters from the next line.
+When head is zero, the first part contains the first "front" characters from the first line.
+The middle part contains the text between the first part and the last part.
+When head is zero and tail is zero and front/back are on the same line, middle is what's between them on that line.
+When tail is not zero, the last part contains the last "tail" lines of text preceded by "back" characters from the previous line.
+When tail is zero, the last part contains the last "back" characters from the last line.
+The returned first + middle + last parts should always be equal to the original text.
+
+# Examples
+
+```python
+"line1\nl","ine2","\nline3\n" == split("line1\nline2\nline3\n",1,1,1,1) 
+```
+
+```python
+"", "a\nb\n", "" == split("a\nb\n",0,0,0,0)
+```
+  
+```python
+"a\n", "", "b\n" == split("a\nb\n",1,0,0,1) 
+``` 
+
+Raise a value error with a message:
+- There is not enough text to perform the split.  Each value error should have an informative message explaining why the split cannot be performed.
+- Negative values are not allowed for head, front, back, and tail.
+- When head > 0 the additional characters that it adds to the first part must not contain a new line character.
+- When tail > 0 the additional characters that it adds to the last part must not contain a new line character, other than in the last character position.
+
+## Assumptions
+
+Make the following assumptions:
+
+- Newline Preservation: splitlines(True) is used to ensure concatenation restores original newlines.
+- Character Count: front and back counts include newline characters if they fall within the range.
+- Use conditional slicing (if back > 0) to avoid edge case where [:-0] results in an empty string, not the full string.
+- The Source fields are Optional[int], but split expects int. Assume None implies 0 
 
 ## Write pytest to verify the functionality.
 
-- Ensure that the strings created by concatinating the first, middle and last lists are equal to the original lines.
-
-Pytests should be in a separate file.  
-Do not use a class, each test should be a function.
-
+- Pytests should be in a separate file.  
+- Do not use a class, each test should be a function.
 - Verify the error conditions.
 - Create concise tests using `@pytest.mark.parametrize` 
 
