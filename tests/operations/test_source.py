@@ -87,3 +87,9 @@ def test_source_strip_variations(strip, lstrip, rstrip, data, expected):
     op.phase_one(data, state)
     assert state["out"] == expected
 
+
+def test_source_strip_chars():
+    op = Source(type="Source", key="res", strip="x")
+    state = {}
+    op.phase_one("xdatax", state)
+    assert state["res"] == "data"

@@ -56,9 +56,9 @@ The phase_one method
 
 1. Trim self.head number of lines from the beginning of the argument "data" and pass to the next step.
 2. Trim self.tail number of lines from the end and pass to the next step.
-3. Run strip() on the trimmed string and pass to the next step.  If self.strip=="" then run strip().
-4. Run lstrip() on the trimmed string and pass to the next step.  If self.strip=="" then run lstrip().
-5. Run rstrip() on the trimmed string and pass to the next step.  If self.strip=="" then run rstrip().
+3. Run strip(self.strip) on the trimmed string and pass to the next step.  If self.strip=="" then run strip().
+4. Run lstrip(self.lstrip) on the trimmed string and pass to the next step.  If self.lstrip=="" then run lstrip().
+5. Run rstrip(self.rstrip) on the trimmed string and pass to the next step.  If self.rstrip=="" then run rstrip().
 3. If file is specified write the trimmed string to the file specified by self.file.
 4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
 5. Return the value of the argument string data unchanged.

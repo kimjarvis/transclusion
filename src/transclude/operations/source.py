@@ -1,11 +1,9 @@
-from typing import Optional, Literal, Dict, Any
-from pathlib import Path
+from typing import Optional, Literal
 from pydantic import Field, model_validator
-
 from ..operation import Operation
 
+
 class Source(Operation):
-    # init=False removed to allow explicit type="Source" instantiation required by tests
     type: Literal["Source"] = Field(default="Source")
     file: Optional[str] = Field(default=None, description="File path to write")
     key: Optional[str] = Field(default=None, description="Dictionary key to write")
@@ -16,34 +14,43 @@ class Source(Operation):
     rstrip: Optional[str] = Field(default=None, description="Strip characters from the end")
 
     @model_validator(mode='after')
-    def validate_xor(self) -> 'Source':
-        if (self.file is None) == (self.key is None):
-            raise ValueError("Exactly one of 'file' or 'key' must be specified")
+    def validate_file_key_exclusivity(self):
+        if not self.file and not self.key:
+            raise ValueError("Either 'file' or 'key' must be specified")
+        if self.file and self.key:
+            raise ValueError("'file' and 'key' are mutually exclusive")
         return self
 
     def phase_one(self, data: str, state: dict) -> str:
+        original_data = data
         lines = data.splitlines(keepends=True)
 
+        # Head
         if self.head:
             lines = lines[self.head:]
+
+        # Tail
         if self.tail:
-            lines = lines[:-self.tail] if self.tail < len(lines) else []
+            lines = lines[:-self.tail] if len(lines) > self.tail else []
 
-        processed = "".join(lines)
+        data = "".join(lines)
 
+        # Strip
         if self.strip is not None:
-            processed = processed.strip() if self.strip == "" else processed.strip(self.strip)
+            data = data.strip() if self.strip == "" else data.strip(self.strip)
         if self.lstrip is not None:
-            processed = processed.lstrip() if self.lstrip == "" else processed.lstrip(self.lstrip)
+            data = data.lstrip() if self.lstrip == "" else data.lstrip(self.lstrip)
         if self.rstrip is not None:
-            processed = processed.rstrip() if self.rstrip == "" else processed.rstrip(self.rstrip)
+            data = data.rstrip() if self.rstrip == "" else data.rstrip(self.rstrip)
 
+        # Write
         if self.file:
-            Path(self.file).write_text(processed, encoding='utf-8')
+            with open(self.file, 'w') as f:
+                f.write(data)
         elif self.key:
-            state[self.key] = processed
+            state[self.key] = data
 
-        return data
+        return original_data
 
     def phase_two(self, data: str, state: dict) -> str:
         return data
