@@ -44,3 +44,16 @@ def test_include_phase_two_missing_file():
     op = Include(type="Include", file="/nonexistent", head=0, tail=0)
     with pytest.raises(ValueError):
         op.phase_two("data", {})
+
+def test_phase_two_prefix_suffix():
+    import tempfile
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
+        f.write("xxx")
+        path = f.name
+    try:
+        op = Include(type="Include", file=path, head=0, tail=0, prefix="[", suffix="]")
+        data = "line1\n"
+        assert op.phase_two(data, {}) == "[xxx]"
+    finally:
+        import os
+        os.unlink(path)

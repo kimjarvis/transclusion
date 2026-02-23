@@ -5,23 +5,28 @@ from transclude.transclude import Transclude
 
 def main():
     t = Transclude()
-    t.register("Uppercase", Uppercase)
     t.register("Include", Include)
     t.register("Source", Source)
-    c, x = t.render("""
+    c, x = t.render('''
+def fib(n):
+    """Return the nth Fibonacci number.
 
-# {{ "type": "Include", "key": "example", "head": 2, "tail": 2 }}
-```python
-```
-# {{ }}    
+    :param int n: Index
+    :rtype: int
 
-# {{ "type": "Source", "key": "example", "head": 1, "tail": 1 }}
-line 1
-line 2
-line 3
-# {{ }}    
+    {{ "type": "Include", "key": "example" }}{{ }} 
+    """
+    a, b = 0, 1
+    for _ in range(n):
+        a, b = b, a + b
+    return a
 
-    """)
+def test_fib():
+    # {{ "type": "Source", "key": "example" }}
+    assert fib(6) == 8 
+    # {{ }}    
+''')
+
     print(f"x:{x}")
     print(f"Changed:{c}")
     c1, y= t.render(x)

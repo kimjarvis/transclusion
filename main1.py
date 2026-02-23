@@ -14,11 +14,7 @@ def fib(n):
     :param int n: Index
     :rtype: int
 
-    {{ "type": "Include", "key": "example", "head": 2, "tail": 2 }}
-    line 1
-    line 2
-    line 3
-    {{ }} 
+    {{ "type": "Include", "key": "example", "head": 0, "tail": 0, "prefix": "\\n    >>> ", "suffix": "\\n    " }}{{ }} 
     """
     a, b = 0, 1
     for _ in range(n):
