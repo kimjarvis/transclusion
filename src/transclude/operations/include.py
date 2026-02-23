@@ -1,67 +1,54 @@
-import os
+from pathlib import Path
 from typing import Literal, Optional
+
 from pydantic import Field, model_validator
+
 from ..operation import Operation
+from ..split import split
 
 
 class Include(Operation):
     type: Literal["Include"] = Field(default="Include")
     file: Optional[str] = Field(default=None, description="File path to read")
     key: Optional[str] = Field(default=None, description="Dictionary key to read")
-    head: Optional[int] = Field(default=0, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=0, description="Number of lines from the end to retain")
-    prefix: Optional[str] = Field(default=None, description="String to insert before data")
-    suffix: Optional[str] = Field(default=None, description="String to insert after data")
+    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
+    tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
+    front: Optional[int] = Field(default=None, description="Number of characters from the beginning to retain")
+    back: Optional[int] = Field(default=None, description="Number of characters from the end to retain")
 
     @model_validator(mode='after')
-    def validate_file_key(self):
-        if not self.file and not self.key:
-            raise ValueError("Either 'file' or 'key' must be specified")
-        if self.file and self.key:
-            raise ValueError("'file' and 'key' are mutually exclusive")
+    def validate_file_xor_key(self):
+        if (self.file is None) == (self.key is None):
+            raise ValueError("Exactly one of 'file' or 'key' must be specified")
         return self
 
-    def _get_lines(self, data: str) -> list[str]:
-        return data.splitlines(keepends=True)
-
     def phase_one(self, data: str, state: dict) -> str:
-        lines = self._get_lines(data)
-        print(lines, len(lines))
-        count = len(lines)
-        head = self.head or 0
-        tail = self.tail or 0
-
-        if head + tail > count:
-            raise ValueError(f"head + tail must be less than the number of lines {count}")
-
-        a = lines[:head]
-        b = lines[-tail:] if tail > 0 else []
-        return "".join(a + b)
+        res = split(
+            data,
+            self.head or 0,
+            self.front or 0,
+            self.back or 0,
+            self.tail or 0
+        )
+        return res.first + res.last
 
     def phase_two(self, data: str, state: dict) -> str:
-        # Resolve content x
+        res = split(
+            data,
+            self.head or 0,
+            self.front or 0,
+            self.back or 0,
+            self.tail or 0
+        )
+
         if self.file:
-            if not (os.path.isfile(self.file) or os.path.islink(self.file)):
-                raise ValueError(f"Invalid file path: {self.file}")
-            with open(self.file, 'r', encoding='utf-8') as f:
-                x = f.read()
-        elif self.key:
-            if self.key not in state:
-                raise ValueError(f"Key '{self.key}' not found in state")
-            x = state[self.key]
+            path = Path(self.file)
+            if not path.exists():
+                raise FileNotFoundError(f"File not found: {self.file}")
+            x = path.read_text(encoding='utf-8')
         else:
-            # Should be caught by validator, but safe guard
-            raise ValueError("No file or key specified")
+            if self.key not in state:
+                raise KeyError(f"Key not found in state: {self.key}")
+            x = state[self.key]
 
-        lines = self._get_lines(data)
-        head = self.head or 0
-        tail = self.tail or 0
-
-        # Note: phase_two spec does not explicitly mandate the head+tail error check
-        a = lines[:head]
-        b = lines[-tail:] if tail > 0 else []
-
-        prefix = self.prefix or ""
-        suffix = self.suffix or ""
-
-        return "".join(a) + prefix + x + suffix + "".join(b)
+        return res.first + x + res.last

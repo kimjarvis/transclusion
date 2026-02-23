@@ -56,25 +56,28 @@ The function split is defined in src/transclude/split.py It can be imported like
 
 ```python
 from ..split import split
+
+class TextSplit(NamedTuple):
+    first: str
+    middle: str
+    last: str
+
+
+def split(text: str, head: int, front: int, back: int, tail: int) -> TextSplit:
 ```
-
-```python
-def split(text: str, head: int, front: int, back: int, tail: int) -> Tuple[str, str, str]:
-```
-
-
 
 The phase_one method 
 
-1. Call split to the argument string data into strings a,b,c.
-2. Return the concatenation a + b.  
+1. Call split to the argument string data into strings first, middle and last.
+2. Return the concatenation `first + last`.  
+3. Preserve original newline characters during reconstruction.
 
 The phase_two method
 
 1. If self.file is specified verify that the value is a file path or a symbolic link. 
 2. Read the content of the file, assume a uft-8 text file into the string x.
 3. If self.key is specified, verify that the value is a dictionary key in state.  Let x=state[self.key]
-4. Return the concatenation a + x + b.  
+4. Return the concatenation first + x + last.  
 5. Preserve original newline characters during reconstruction.
 
 ### Assumptions

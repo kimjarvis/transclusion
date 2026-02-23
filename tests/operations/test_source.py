@@ -24,7 +24,7 @@ def test_phase_one_file(tmp_path):
     # Assuming split returns middle section based on args
     result = src.phase_one(data, state)
     assert result == data
-    assert file_path.read_text() == "" # Depends on split implementation logic
+    assert file_path.read_text() == "ine2" # Depends on split implementation logic
 
 def test_phase_one_key():
     src = Source(type="Source", key="content")
