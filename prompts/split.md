@@ -3,60 +3,129 @@
 Function signature:
 
 ```python
-def split(text: str, head: int, front: int, back: int, tail: int) -> Tuple[str,str,str]
+def split(text: str, head: int, tail: int) -> TextSplit
 ```
+
+- Negative values are not allowed for head and tail.
+- There are no defaults.
 
 Use dataclasses or named tuples for the return type to make the result self-documenting:
 
 ```python
 from typing import NamedTuple
 class TextSplit(NamedTuple):
-    first: str
+    top: str
     middle: str
-    last: str
+    bottom: str
 ```
 
 Source file: src/transclude/split.py
 
 # Expected behavior:
 
-The string text is split into three parts: first, middle, and last and returned in a tuple.
-When head is not zero, the first part contains the first "head" lines of text followed by "front" characters from the next line.
-When head is zero, the first part contains the first "front" characters from the first line.
-The middle part contains the text between the first part and the last part.
-When head is zero and tail is zero and front/back are on the same line, middle is what's between them on that line.
-When tail is not zero, the last part contains the last "tail" lines of text preceded by "back" characters from the previous line.
-When tail is zero, the last part contains the last "back" characters from the last line.
-The returned first + middle + last parts should always be equal to the original text.
+The string text is split into three parts: top, middle and bottom and returned.
+
+Normalization of text: If the last character of text is not a new line character then a new line character is appended.
+
+The top part contains the first head lines of text.  When head is zero, top is an empty string.  When head is not empty the last character must be a newline character.
+
+The middle part contains the text between the top part and the bottom part. 
+
+The bottom part contains the last tail lines of text. When tail is zero, bottom is an empty string. When bottom part is not empty the last character must be a newline character.
+
+The top, middle and bottom parts cannot overlap.
+
+The Normalization is removed before the text is returned.  If the last character of the original text is not a new line character then the text will have been normalized. In this case,  The last character of bottom , which will be a new line character, is removed. Or if bottom is the empty string then the last character of middle, which will be a ne line character, is removed or if bottom and middle are empty strings then the last character of top, which will be a new line character, is removed.
+
+The concatenation of the returned top + middle + bottom is equal to the input text.  
+
+Empty input is treated as a single empty line.
 
 # Examples
 
 ```python
-"line1\nl","ine2","\nline3\n" == split("line1\nline2\nline3\n",1,1,1,1) 
+    split("line1\nline2\nline3\n",1,1) =="line1\n",
+                                                            "line2\n",
+                                                            "line3\n",
 ```
 
 ```python
-"", "a\nb\n", "" == split("a\nb\n",0,0,0,0)
+    split("line1\nline2\nline3",1,1) =="line1\n",
+                                                            "line2\n",
+                                                            "line3",
 ```
-  
+
 ```python
-"a\n", "", "b\n" == split("a\nb\n",1,0,0,1) 
-``` 
+                    split("line1\nline3\n",1,1) =="line1\n",
+                                                            "",
+                                                            "line3\n",
+```
+
+```python
+                    split("a\nb\n",0,0) == "",
+                                                        "a\nb\n"
+                                                        "",
+```
+
+```python
+                    split("a\nb\n",1,0) == "a\n", 
+                                                         "b\n", 
+                                                         ""
+```
+
+```python
+                    split("line\n",0,0) == "", 
+                                                         "line\n", 
+                                                         ""
+```
+
+```python
+                    split("ab\ncd",1,1) == "ab\n","","cd"
+```
+
+```python
+                    split("abcd",1,0) == "abcd","",""
+```
+
+```python
+                    split("abcd",0,0) == "","abcd",""
+```
+
+```python
+                    split("ab\ncd",1,0) == "ab\n","cd",""
+```
+
+```python
+                    split("ab\ncd\n",1,1) == "ab\n","","cd\n"
+```
+
+```python
+                    split("ab\ncd\n",2,0) == "ab\ncd\n", "", ""
+```
+
+```python
+                    split("",0,0) == "", "", ""
+```
+
+# Error conditions
 
 Raise a value error with a message:
-- There is not enough text to perform the split.  Each value error should have an informative message explaining why the split cannot be performed.
-- Negative values are not allowed for head, front, back, and tail.
-- When head > 0 the additional characters that it adds to the first part must not contain a new line character.
-- When tail > 0 the additional characters that it adds to the last part must not contain a new line character, other than in the last character position.
+
+- There is not enough lines of text to perform the split.  Each value error should have an informative message explaining why the split cannot be performed.
+
+## Example errors
+
+```python
+split("abcd\n",1,1)
+split("ab\ncd\n",2,1)
+```
 
 ## Assumptions
 
 Make the following assumptions:
 
 - Newline Preservation: splitlines(True) is used to ensure concatenation restores original newlines.
-- Character Count: front and back counts include newline characters if they fall within the range.
-- Use conditional slicing (if back > 0) to avoid edge case where [:-0] results in an empty string, not the full string.
-- The Source fields are Optional[int], but split expects int. Assume None implies 0 
+- Only new line characters are supported `\n`.  
 
 ## Write pytest to verify the functionality.
 

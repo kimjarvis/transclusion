@@ -36,20 +36,18 @@ Use Literal["Source"] for Discriminator Safety.
 Source class has field:
 
 ```python
-    type: Literal["Source"] = Field(default="Source", init=False)
-    file: Optional[str] = Field(..., description="File path to write")
-    key: Optional[str] = Field(..., description="Dictionary key to write")    
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to skip")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to skip")
-    front: Optional[int] = Field(default=None, description="Number of characters from the beginning to skip")
-    back: Optional[int] = Field(default=None, description="Number of characters from the end to skip")
+    type: Literal["Source"] = Field(default="Source")
+    file: Optional[str] = Field(description="File path to write")
+    key: Optional[str] = Field(description="Dictionary key to write")    
+    head: Optional[int] = Field(description="Number of lines from the head to skip")
+    tail: Optional[int] = Field(description="Number of lines from the tail to skip") 
 ```
 
-Note that, the type field uses discriminator='type' in the parent class. 
-Pydantic V2 requires discriminator fields to be explicitly present in input data during instantiation
-
 Use Pydantic V2 to ensure:
+
 - File and key are mutually exclusive parameters.  One of them must be specified.
+- head is optional it defaults to 1
+- tail is optional it defaults to 1
 
 The function split is defined in src/transclude/split.py.  It can be imported like this:
 
@@ -58,15 +56,26 @@ from ..split import split
 ```
 
 ```python
-def split(text: str, head: int, front: int, back: int, tail: int) -> Tuple[str, str, str]:
+def split(text: str, head: int, tail: int) -> TextSplit:
+```
+
+```python
+from typing import NamedTuple
+class TextSplit(NamedTuple):
+    top: str
+    middle: str
+    bottom: str
 ```
 
 The phase_one method 
 
-1. Call split to the argument string data into strings a,b,c.
-3. If file is specified write the string 'b' to the file specified by self.file.
-4. If key is specified write the string 'b' to the dictionary state `state[self.key] = b`
-5. Return the value of the argument string data unchanged.
+  1.Call `split(data,self.head,self.tail)` using the argument sting data.  This returns a `TextSplit` object with string fields top, middle and  bottom.
+
+1. If file is specified write the string middle to the file specified by self.file.
+
+2. If key is specified write the string middle to the dictionary state `state[self.key] = middle`
+
+3. Return the value of the argument string text unchanged.
 
 The phase_two method
 
@@ -93,5 +102,3 @@ Explicitly pass type="Source" when instantiating Source in tests.
 Describe any logical inconsistencies in the function specification and suggest improvements.
 
 Describe any assumptions that are not explicitly stated in the function specification.
-
-

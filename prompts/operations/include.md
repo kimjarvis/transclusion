@@ -36,40 +36,41 @@ Use Literal["Include"] for Discriminator Safety.
 Include class has field:
 
 ```python
-    type: Literal["Include"] = Field(default="Include", init=False)
-    file: Optional[str] = Field(..., description="File path to read")
-    key: Optional[str] = Field(..., description="Dictionary key to read")    
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to retain")
-    front: Optional[int] = Field(default=None, description="Number of characters from the beginning to retain")
-    bask: Optional[int] = Field(default=None, description="Number of characters from the end to retain")
+    type: Literal["Include"] = Field(default="Include")
+    file: Optional[str] = Field(description="File path to read")
+    key: Optional[str] = Field(description="Dictionary key to read")    
+    head: Optional[int] = Field(default=1, description="Number of lines from the head to skip")
+    tail: Optional[int] = Field(default=1, description="Number of lines from the tail to skip")  
 ```
 
-Note that, the type field uses discriminator='type' in the parent class. 
-Pydantic V2 requires discriminator fields to be explicitly present in input data during instantiation
-
 Use Pydantic V2 to ensure:
+
 - File and key are mutually exclusive parameters.  One of them must be specified.
+- head is optional it defaults to 1
+- tail is optional it defaults to 1
 
-
-The function split is defined in src/transclude/split.py It can be imported like this:
+The function split is defined in src/transclude/split.py. It can be imported like this:
 
 ```python
 from ..split import split
+```
 
+```python
+def split(text: str, head: int, tail: int) -> TextSplit:
+```
+
+```python
+from typing import NamedTuple
 class TextSplit(NamedTuple):
-    first: str
+    top: str
     middle: str
-    last: str
-
-
-def split(text: str, head: int, front: int, back: int, tail: int) -> TextSplit:
+    bottom: str
 ```
 
 The phase_one method 
 
-1. Call split to the argument string data into strings first, middle and last.
-2. Return the concatenation `first + last`.  
+1. Call `split(data,self.head,self.tail)` using the argument sting data.  This returns a `TextSplit` object with string fields top, middle and bottom.
+2. Return the concatenation top + bottom.  
 3. Preserve original newline characters during reconstruction.
 
 The phase_two method
@@ -77,8 +78,9 @@ The phase_two method
 1. If self.file is specified verify that the value is a file path or a symbolic link. 
 2. Read the content of the file, assume a uft-8 text file into the string x.
 3. If self.key is specified, verify that the value is a dictionary key in state.  Let x=state[self.key]
-4. Return the concatenation first + x + last.  
-5. Preserve original newline characters during reconstruction.
+4. Call `split(data,self.head,self.tail)` using the argument sting data.  This returns a `TextSplit` object with string fields top, middle and bottom.
+5. Return the concatenation top + x + bottm.  
+6. Preserve original newline characters during reconstruction.
 
 ### Assumptions
 
