@@ -14,17 +14,19 @@ def fib(n):
     :param int n: Index
     :rtype: int
 
-    {{ "type": "Include", "key": "example", "head": 0, "tail": 0, "prefix": "\\n    >>> ", "suffix": "\\n    " }}{{ }} 
+    # {{ "type": "Include", "key": "example" }}
+    assert fib(6) == 8 
+    # {{ }} 
     """
     a, b = 0, 1
     for _ in range(n):
         a, b = b, a + b
     return a
 
+# {{ "type": "Source", "key": "example", "head": 2 }}
 def test_fib():
-    # {{ "type": "Source", "key": "example", "head": 1, "tail": 1, "strip": "" }}
     assert fib(6) == 8 
-    # {{ }}    
+# {{ }}    
 ''')
 
     print(f"x:{x}")
