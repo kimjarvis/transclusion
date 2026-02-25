@@ -19,7 +19,7 @@ class TextSplit(NamedTuple):
     bottom: str
 ```
 
-Source file: src/transclude/split.py
+Source file: src/syncspec/split.py
 
 # Expected behavior:
 

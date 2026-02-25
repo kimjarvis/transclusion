@@ -27,7 +27,7 @@ def test_invalid_sublist_length():
     with pytest.raises(ValueError):
         execute_phase_two([['short', 'list']], {})
 
-def test_invalid_operation_type():
+def test_invalid_directive_type():
     with pytest.raises(ValueError):
         execute_phase_two([['A', {}, "NotAnOp", 'B', 'C', {}, 'input']], {})
 

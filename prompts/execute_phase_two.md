@@ -1,6 +1,6 @@
 ## Write a single function to perform the task.
 
-Source file: src/transclude/execute_phase_two.py
+Source file: src/syncspec/execute_phase_two.py
 
 Function signature:
 
@@ -42,16 +42,16 @@ item [6] is a string.
 
 Verify that these items are of the correct type issue value error with a message if they are not.
 
-The item[3] is an object of a pydantic V2 class whose parent class is defined in src/transclude/operation.py as follows:
+The item[3] is an object of a pydantic V2 class whose parent class is defined in src/syncspec/directive.py as follows:
 
 ```python
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class Operation(BaseModel, ABC):
+class Directive(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
-    type: str = Field(..., description="Type of transclude operation")
+    type: str = Field(..., description="Type of syncspec directive")
 
     @abstractmethod
     def phase_one(self, data: str, state: dict) -> str:
@@ -66,7 +66,7 @@ Call the phase_two() method of the object with the string as the argument.  Like
 
 item[3].phase_two(item[6], state)
 
-- state is the dictionary passed as a parameter to operation.
+- state is the dictionary passed as a parameter to directive.
 
 Test whether the outputis equal to the input string set a boolian value called `changed` to be true if they are not equal.  
 Like this:
@@ -76,7 +76,7 @@ changed = item[3].execute_phase_two(item[6],state) == item[6]
 ```
 
 Output the input list with the result of phase_two() added to the sub-list.  
-If the input list is in the form `[m,[a,b,c,d,e,f,g],n]` then c is an object of type Operation and g is a string.  
+If the input list is in the form `[m,[a,b,c,d,e,f,g],n]` then c is an object of type Directive and g is a string.  
 Call the output of `c.phase_two(g, state)` h and the changed indicator i 
 The output list shall be the list `[m,[a,b,c,d,e,f,g,h,i],n]`
 

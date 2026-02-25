@@ -1,10 +1,10 @@
 
-Class Operation is:
-- An abstract class defined in source: src/transclude/operation.py
+Class Directive is:
+- An abstract class defined in source: src/syncspec/directive.py
 - A pydnatic V2 class.
-- Part of the transclude package.
+- Part of the syncspec package.
 
-## Generate a the class Operation
+## Generate a the class Directive
 
 Use this as a guideline.
 
@@ -12,10 +12,10 @@ Use this as a guideline.
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class Operation(BaseModel, ABC):
+class Directive(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid')
 
-    type: str = Field(..., description="Type of transclude operation")
+    type: str = Field(..., description="Type of syncspec directive")
 
     @abstractmethod
     def phase_one(self, data: str, state: dict) -> str:

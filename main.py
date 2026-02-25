@@ -1,7 +1,7 @@
 from syncspec.directives.uppercase import Uppercase
 from syncspec.directives.include import Include
 from syncspec.directives.source import Source
-from syncspec.transclude import Syncspec
+from syncspec.syncspec import Syncspec
 
 def main():
     t = Syncspec()

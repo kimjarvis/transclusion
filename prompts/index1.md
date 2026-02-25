@@ -1,4 +1,4 @@
-# Transclusion
+# Syncspec
 
 # [ensure_balanced_delimiters](ensure_balanced_delimiters.md)
 
@@ -83,20 +83,20 @@ blocks_to_dictionaries([[
         ]]
 ```
 
-# [dictionaries_to_operations](dictionaries_to_operations.md)
+# [dictionaries_to_directives](dictionaries_to_directives.md)
 
 Uses Pydantic matching to verify that python dictionaries can be converted to objects.
 
 Function signature:
 
 ```python
-def dictionaries_to_operations(x: list[Any]) -> None:
+def dictionaries_to_directives(x: list[Any]) -> None:
 ```
 
 Expected behaviour:
 
 ```python
-dictionaries_to_operations(
+dictionaries_to_directives(
     [['A', {'type': 'Begin', 'source': 's', 'shift': 1}, 'B', 'C', {'type': 'End'}]]
 ) == [['A', 
        {'type': 'Begin', 'source': 's', 'shift': 1}, 
@@ -110,7 +110,7 @@ dictionaries_to_operations(
 
 # [execute_phase one](execute_phase_one.md)
 
-Call the execute method of the operation objects with the string block as the argument.
+Call the execute method of the directive objects with the string block as the argument.
 
 Function signature:
 
@@ -136,7 +136,7 @@ execute([['A',
           'C', 
           {'type': 'End'}, 
           End(type='End'),
-          'result of execute_operations()'
+          'result of execute_directives()'
           ]]    
 ```
 

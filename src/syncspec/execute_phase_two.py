@@ -12,7 +12,7 @@ def execute_phase_two(x: list[Any], state: dict) -> list[Any]:
             input_str = item[6]
 
             if not isinstance(op_obj, Directive):
-                raise ValueError(f"Item at index 2 in sub-list {i} must be an Operation instance")
+                raise ValueError(f"Item at index 2 in sub-list {i} must be an Directive instance")
             if not isinstance(input_str, str):
                 raise ValueError(f"Item at index 6 in sub-list {i} must be a string")
 

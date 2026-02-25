@@ -1,17 +1,17 @@
 ## Write a class Uppercase 
 
-In source: src/transclude/operations/uppercase.py
+In source: src/syncspec/directives/uppercase.py
 
-Inherit from an abstract pydantic V2 class Operation. 
+Inherit from an abstract pydantic V2 class Directive. 
 
 ```python
 from abc import ABC, abstractmethod
 from pydantic import BaseModel, ConfigDict, Field
 
-class Operation(BaseModel, ABC):
+class Directive(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
-    type: str = Field(..., description="Type of transclude operation")
+    type: str = Field(..., description="Type of syncspec directive")
 
     @abstractmethod
     def phase_one(self, data: str, state: dict) -> str:
@@ -22,10 +22,10 @@ class Operation(BaseModel, ABC):
         pass
 ```
 
-Operation is defined in src/transclude/operation.py.  It can be imported like this:
+Directive is defined in src/syncspec/directive.py.  It can be imported like this:
 
 ```python
-from ..operation import Operation
+from ..directive import Directive
 ```
 
 Implement the required fields.

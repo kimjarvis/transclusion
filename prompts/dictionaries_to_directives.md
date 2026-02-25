@@ -1,12 +1,12 @@
 ## Write a class to perform the task.
 
-Source file: dictionaries_to_operations.py
+Source file: dictionaries_to_directives.py
 
 Function signature:
 
 ```python
 class ChunkValidator:
-    def dictionaries_to_operations(x: list[str]) -> list[Any]:
+    def dictionaries_to_directives(x: list[str]) -> list[Any]:
         pass
     def register(self, filer: str, cls: Any):
         pass
@@ -75,6 +75,6 @@ def test_invalid_types(idx, val, msg):
     data = ["a", {}, "c", "d", {}]
     data[idx] = val
     with pytest.raises(ValueError, match=msg):
-        dictionaries_to_operations([data])
+        dictionaries_to_directives([data])
 ```
 

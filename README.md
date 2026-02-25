@@ -1,10 +1,10 @@
-# Transclude
+# Syncspec
 
-Transclusion framework.
+Syncspec framework.
 
 # Install
 
 ```bash
-pip install transclude
+pip install syncspec
 ```
 
