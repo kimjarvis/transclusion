@@ -1,5 +1,5 @@
 import pytest
-from src.transclude.split import split, TextSplit
+from src.syncspec.split import split, TextSplit
 
 @pytest.mark.parametrize("text, head, tail, expected", [
     ("line1\nline2\nline3\n", 1, 1, ("line1\n", "line2\n", "line3\n")),

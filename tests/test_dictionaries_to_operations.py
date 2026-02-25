@@ -1,6 +1,6 @@
 import pytest
 from pydantic import BaseModel
-from src.transclude.dictionaries_to_operations import Registry
+from src.syncspec.dictionaries_to_operations import Registry
 
 class DummyModel(BaseModel):
     type: str

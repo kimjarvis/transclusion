@@ -9,7 +9,7 @@ from .reassemble_document import reassemble_document
 from .state_dictionary import State_dictionary
 
 
-class Transclude(Registry, State_dictionary):
+class Syncspec(Registry, State_dictionary):
     def __init__(self, open_delimiter: str = "{{", close_delimiter: str = "}}"):
         State_dictionary.__init__(self)
         super().__init__()

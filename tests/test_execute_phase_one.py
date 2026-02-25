@@ -1,8 +1,8 @@
 import pytest
-from src.transclude.execute_phase_one import execute_phase_one
-from src.transclude.operation import Operation
+from src.syncspec.execute_phase_one import execute_phase_one
+from src.syncspec.directive import Directive
 
-class MockOperation(Operation):
+class MockOperation(Directive):
     type: str = "Mock"
     def phase_one(self, data: str, state: dict) -> str:
         return f"processed:{data}"

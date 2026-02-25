@@ -1,9 +1,9 @@
 import pytest
 from typing import Any
-from src.transclude.operation import Operation
-from src.transclude.execute_phase_two import execute_phase_two
+from src.syncspec.directive import Directive
+from src.syncspec.execute_phase_two import execute_phase_two
 
-class MockOp(Operation):
+class MockOp(Directive):
     type: str = "Mock"
     def phase_one(self, data: str, state: dict) -> str: return data
     def phase_two(self, data: str, state: dict) -> str:

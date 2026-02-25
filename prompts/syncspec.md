@@ -1,9 +1,9 @@
-from state_dictionary import State_dictionaryWrite a class `Transclude` to perform the task.
+from state_dictionary import State_dictionaryWrite a class `Syncspec` to perform the task.
 
 Class signature:
 
 ```python
-class Transclude(Registry, State_dictionary):
+class Syncspec(Registry, State_dictionary):
     def __init__(self, open_delimiter: str = "{{", close_delimiter: str = "}}"):
         State_dictionary.__init__(self)  # Explicitly initialize _state
         super().__init__()               # Initialize Registry

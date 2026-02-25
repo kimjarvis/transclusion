@@ -1,5 +1,5 @@
 import pytest
-from src.transclude.ensure_balanced_delimiters import ensure_balanced_delimiters
+from src.syncspec.ensure_balanced_delimiters import ensure_balanced_delimiters
 
 class TestEnsureBalancedParentheses:
 

@@ -1,9 +1,9 @@
 from typing import Literal, Optional
 from pydantic import Field, model_validator
-from ..operation import Operation
+from ..directive import Directive
 from ..split import split
 
-class Source(Operation):
+class Source(Directive):
     type: Literal["Source"] = Field(default="Source")
     file: Optional[str] = Field(default=None, description="File path to write")
     key: Optional[str] = Field(default=None, description="Dictionary key to write")

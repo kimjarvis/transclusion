@@ -1,5 +1,5 @@
 from typing import Any
-from .operation import Operation
+from .directive import Directive
 
 
 def execute_phase_two(x: list[Any], state: dict) -> list[Any]:
@@ -11,7 +11,7 @@ def execute_phase_two(x: list[Any], state: dict) -> list[Any]:
             op_obj = item[2]
             input_str = item[6]
 
-            if not isinstance(op_obj, Operation):
+            if not isinstance(op_obj, Directive):
                 raise ValueError(f"Item at index 2 in sub-list {i} must be an Operation instance")
             if not isinstance(input_str, str):
                 raise ValueError(f"Item at index 6 in sub-list {i} must be a string")

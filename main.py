@@ -1,10 +1,10 @@
-from transclude.operations.uppercase import Uppercase
-from transclude.operations.include import Include
-from transclude.operations.source import Source
-from transclude.transclude import Transclude
+from syncspec.directives.uppercase import Uppercase
+from syncspec.directives.include import Include
+from syncspec.directives.source import Source
+from syncspec.transclude import Syncspec
 
 def main():
-    t = Transclude()
+    t = Syncspec()
     t.register("Include", Include)
     t.register("Source", Source)
     c, x = t.render('''

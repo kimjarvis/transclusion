@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from src.transclude.operations.source import Source
+from src.syncspec.directives.source import Source
 
 @pytest.mark.parametrize("file,key,valid", [
     ("path.txt", None, True),

@@ -1,6 +1,6 @@
 # test_blocks_to_dictionaries.py
 import pytest
-from src.transclude.blocks_to_dictionaries import blocks_to_dictionaries
+from src.syncspec.blocks_to_dictionaries import blocks_to_dictionaries
 
 
 def test_string_passthrough():

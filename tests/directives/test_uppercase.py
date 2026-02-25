@@ -1,4 +1,4 @@
-from src.transclude.operations.uppercase import Uppercase
+from src.syncspec.directives.uppercase import Uppercase
 
 def test_instantiation():
     op = Uppercase()

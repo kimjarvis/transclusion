@@ -1,4 +1,4 @@
-from src.transclude.parse_delimiters import parse_delimiters
+from src.syncspec.parse_delimiters import parse_delimiters
 
 
 def test_single_character():

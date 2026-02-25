@@ -2,11 +2,11 @@ from typing import Literal, Optional
 from pathlib import Path
 from pydantic import Field, model_validator
 
-from ..operation import Operation
+from ..directive import Directive
 from ..split import split
 
 
-class Include(Operation):
+class Include(Directive):
     type: Literal["Include"] = Field(default="Include")
     file: Optional[str] = Field(default=None, description="File path to read")
     key: Optional[str] = Field(default=None, description="Dictionary key to read")

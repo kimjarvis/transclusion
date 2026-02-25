@@ -1,7 +1,7 @@
 from typing import Literal
-from ..operation import Operation
+from ..directive import Directive
 
-class Uppercase(Operation):
+class Uppercase(Directive):
     type: Literal["Uppercase"] = "Uppercase"
 
     def phase_one(self, data: str, state: dict) -> str:

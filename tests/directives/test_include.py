@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from src.transclude.operations.include import Include
+from src.syncspec.directives.include import Include
 
 
 @pytest.mark.parametrize("file,key", [(None, None), ("path.txt", "key")])

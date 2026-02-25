@@ -1,5 +1,5 @@
 import pytest
-from src.transclude.reassemble_document import reassemble_document
+from src.syncspec.reassemble_document import reassemble_document
 
 @pytest.mark.parametrize("data, expected", [
     (["m", ["a","b","c","d","e","g","h","i",True], "n"], (True, "m{{a}}i{{e}}n")),
