@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from src.syncspec.dictionaries_to_directives import Registry
 
 class DummyModel(BaseModel):
-    type: str
+    syncspec: str
 
 @pytest.fixture
 def validator():
@@ -39,16 +39,16 @@ def test_conflicting_keys(validator):
 
 def test_missing_type_key(validator):
     data = ["a", {}, "c", "d", {}]
-    with pytest.raises(ValueError, match="Missing 'type' key"):
+    with pytest.raises(ValueError, match="Missing 'syncspec' key"):
         validator.dictionaries_to_directives([data])
 
 def test_unknown_type(validator):
-    data = ["a", {"type": "unknown"}, "c", "d", {}]
-    with pytest.raises(ValueError, match="Unknown type"):
+    data = ["a", {"syncspec": "unknown"}, "c", "d", {}]
+    with pytest.raises(ValueError, match="Unknown directive"):
         validator.dictionaries_to_directives([data])
 
 def test_valid_flow(validator):
-    data = ["a", {"type": "dummy"}, "c", "d", {}]
+    data = ["a", {"syncspec": "dummy"}, "c", "d", {}]
     result = validator.dictionaries_to_directives([data])
     assert len(result) == 1
     assert len(result[0]) == 6
