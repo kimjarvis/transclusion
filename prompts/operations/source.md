@@ -36,32 +36,46 @@ Use Literal["Source"] for Discriminator Safety.
 Source class has field:
 
 ```python
-    type: Literal["Source"] = Field(default="Source", init=False)
-    file: Optional[str] = Field(..., description="File path to write")
-    key: Optional[str] = Field(..., description="Dictionary key to write")    
-    head: Optional[int] = Field(default=None, description="Number of lines from the beginning to skip")
-    tail: Optional[int] = Field(default=None, description="Number of lines from the end to skip")
-    strip: Optional[str] = Field(default=None, description="Stip characters from the beginning and end")
-    lstrip: Optional[str] = Field(default=None, description="Stip characters from the beginning")
-    rstrip: Optional[str] = Field(default=None, description="Stip characters from the end")
+    type: Literal["Source"] = Field(default="Source")
+    file: Optional[str] = Field(description="File path to write")
+    key: Optional[str] = Field(description="Dictionary key to write")    
+    head: Optional[int] = Field(description="Number of lines from the head to skip")
+    tail: Optional[int] = Field(description="Number of lines from the tail to skip") 
 ```
 
-Note that, the type field uses discriminator='type' in the parent class. 
-Pydantic V2 requires discriminator fields to be explicitly present in input data during instantiation
-
 Use Pydantic V2 to ensure:
+
 - File and key are mutually exclusive parameters.  One of them must be specified.
+- head is optional it defaults to 1
+- tail is optional it defaults to 1
+
+The function split is defined in src/transclude/split.py.  It can be imported like this:
+
+```python
+from ..split import split
+```
+
+```python
+def split(text: str, head: int, tail: int) -> TextSplit:
+```
+
+```python
+from typing import NamedTuple
+class TextSplit(NamedTuple):
+    top: str
+    middle: str
+    bottom: str
+```
 
 The phase_one method 
 
-1. Trim self.head number of lines from the beginning of the argument "data" and pass to the next step.
-2. Trim self.tail number of lines from the end and pass to the next step.
-3. Run strip(self.strip) on the trimmed string and pass to the next step.  If self.strip=="" then run strip().
-4. Run lstrip(self.lstrip) on the trimmed string and pass to the next step.  If self.lstrip=="" then run lstrip().
-5. Run rstrip(self.rstrip) on the trimmed string and pass to the next step.  If self.rstrip=="" then run rstrip().
-3. If file is specified write the trimmed string to the file specified by self.file.
-4. If key is specified write the trimmed string to the dictionary state `state[self.key] = trimmed`
-5. Return the value of the argument string data unchanged.
+  1.Call `split(data,self.head,self.tail)` using the argument sting data.  This returns a `TextSplit` object with string fields top, middle and  bottom.
+
+1. If file is specified write the string middle to the file specified by self.file.
+
+2. If key is specified write the string middle to the dictionary state `state[self.key] = middle`
+
+3. Return the value of the argument string text unchanged.
 
 The phase_two method
 
@@ -72,14 +86,14 @@ The phase_two method
 Make these assumptions:
 
 - Line Endings: splitlines(keepends=True) preserves newline characters during slicing.
-- Strip Behavior: strip methods treat the argument as a set of characters to remove, not a substring.
-- Zero Values: head=0 or tail=0 are treated as falsy (no operation).
 
 ## Write pytest to verify the functionality.
 
 - Pytests should be in a separate file. 
 - Do not define a test class.  
 - Tests should be individual functions.
+- Verify the error conditions.
+- Create concise tests using `@pytest.mark.parametrize` 
 
 Explicitly pass type="Source" when instantiating Source in tests.
 

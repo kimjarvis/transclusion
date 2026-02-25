@@ -1,67 +1,39 @@
-import os
 from typing import Literal, Optional
+from pathlib import Path
 from pydantic import Field, model_validator
+
 from ..operation import Operation
+from ..split import split
 
 
 class Include(Operation):
     type: Literal["Include"] = Field(default="Include")
     file: Optional[str] = Field(default=None, description="File path to read")
     key: Optional[str] = Field(default=None, description="Dictionary key to read")
-    head: Optional[int] = Field(default=0, description="Number of lines from the beginning to retain")
-    tail: Optional[int] = Field(default=0, description="Number of lines from the end to retain")
-    prefix: Optional[str] = Field(default=None, description="String to insert before data")
-    suffix: Optional[str] = Field(default=None, description="String to insert after data")
+    head: int = Field(default=1, description="Number of lines from the head to skip")
+    tail: int = Field(default=1, description="Number of lines from the tail to skip")
 
     @model_validator(mode='after')
-    def validate_file_key(self):
-        if not self.file and not self.key:
-            raise ValueError("Either 'file' or 'key' must be specified")
-        if self.file and self.key:
-            raise ValueError("'file' and 'key' are mutually exclusive")
+    def check_file_key_exclusive(self):
+        if (self.file is None) == (self.key is None):
+            raise ValueError("Exactly one of 'file' or 'key' must be specified")
         return self
 
-    def _get_lines(self, data: str) -> list[str]:
-        return data.splitlines(keepends=True)
-
     def phase_one(self, data: str, state: dict) -> str:
-        lines = self._get_lines(data)
-        print(lines, len(lines))
-        count = len(lines)
-        head = self.head or 0
-        tail = self.tail or 0
-
-        if head + tail > count:
-            raise ValueError(f"head + tail must be less than the number of lines {count}")
-
-        a = lines[:head]
-        b = lines[-tail:] if tail > 0 else []
-        return "".join(a + b)
+        result = split(data, self.head, self.tail)
+        return result.top + result.bottom
 
     def phase_two(self, data: str, state: dict) -> str:
-        # Resolve content x
+        x = ""
         if self.file:
-            if not (os.path.isfile(self.file) or os.path.islink(self.file)):
-                raise ValueError(f"Invalid file path: {self.file}")
-            with open(self.file, 'r', encoding='utf-8') as f:
-                x = f.read()
+            path = Path(self.file)
+            if not path.is_file():
+                raise FileNotFoundError(f"File not found: {self.file}")
+            x = path.read_text(encoding='utf-8')
         elif self.key:
             if self.key not in state:
-                raise ValueError(f"Key '{self.key}' not found in state")
+                raise KeyError(f"Key not found in state: {self.key}")
             x = state[self.key]
-        else:
-            # Should be caught by validator, but safe guard
-            raise ValueError("No file or key specified")
 
-        lines = self._get_lines(data)
-        head = self.head or 0
-        tail = self.tail or 0
-
-        # Note: phase_two spec does not explicitly mandate the head+tail error check
-        a = lines[:head]
-        b = lines[-tail:] if tail > 0 else []
-
-        prefix = self.prefix or ""
-        suffix = self.suffix or ""
-
-        return "".join(a) + prefix + x + suffix + "".join(b)
+        result = split(data, self.head, self.tail)
+        return result.top + x + result.bottom
