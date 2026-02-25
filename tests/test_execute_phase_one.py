@@ -3,7 +3,7 @@ from src.syncspec.execute_phase_one import execute_phase_one
 from src.syncspec.directive import Directive
 
 class MockDirective(Directive):
-    type: str = "Mock"
+    syncspec: str = "Mock"
     def phase_one(self, data: str, state: dict) -> str:
         return f"processed:{data}"
     def phase_two(self, data: str, state: dict) -> str:

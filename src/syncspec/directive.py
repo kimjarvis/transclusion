@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class Directive(BaseModel, ABC):
     model_config = ConfigDict(extra='forbid', discriminator='type')
 
-    type: str = Field(..., description="Type of syncspec directive")
+    syncspec: str = Field(..., description="Type of directive")
 
     @abstractmethod
     def phase_one(self, data: str, state: dict) -> str:

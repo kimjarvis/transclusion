@@ -4,7 +4,7 @@ from ..directive import Directive
 from ..split import split
 
 class Source(Directive):
-    type: Literal["Source"] = Field(default="Source")
+    syncspec: Literal["Source"] = Field(default="Source")
     file: Optional[str] = Field(default=None, description="File path to write")
     key: Optional[str] = Field(default=None, description="Dictionary key to write")
     head: int = Field(default=1, description="Number of lines from the head to skip")

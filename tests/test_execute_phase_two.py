@@ -4,14 +4,14 @@ from src.syncspec.directive import Directive
 from src.syncspec.execute_phase_two import execute_phase_two
 
 class MockOp(Directive):
-    type: str = "Mock"
+    syncspec: str = "Mock"
     def phase_one(self, data: str, state: dict) -> str: return data
     def phase_two(self, data: str, state: dict) -> str:
         return state.get('prefix', '') + data
 
 def test_valid_processing_changed():
     state = {'prefix': 'NEW_'}
-    data = [['A', {}, MockOp(type='Mock'), 'B', 'C', {}, 'input']]
+    data = [['A', {}, MockOp(syncspec='Mock'), 'B', 'C', {}, 'input']]
     result = execute_phase_two(data, state)
     assert result[0][7] == 'NEW_input'
     assert result[0][8] is True
@@ -33,10 +33,10 @@ def test_invalid_directive_type():
 
 def test_invalid_string_type():
     with pytest.raises(ValueError):
-        execute_phase_two([['A', {}, MockOp(type='Mock'), 'B', 'C', {}, 123]], {})
+        execute_phase_two([['A', {}, MockOp(syncspec='Mock'), 'B', 'C', {}, 123]], {})
 
 def test_non_list_items_ignored():
-    data = ['string', 1, ['A', {}, MockOp(type='Mock'), 'B', 'C', {}, 'input']]
+    data = ['string', 1, ['A', {}, MockOp(syncspec='Mock'), 'B', 'C', {}, 'input']]
     result = execute_phase_two(data, {})
     assert len(result) == 3
     assert len(result[2]) == 9

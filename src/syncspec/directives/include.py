@@ -7,11 +7,12 @@ from ..split import split
 
 
 class Include(Directive):
-    type: Literal["Include"] = Field(default="Include")
+    syncspec: Literal["Include"] = Field(default="Include")
     file: Optional[str] = Field(default=None, description="File path to read")
     key: Optional[str] = Field(default=None, description="Dictionary key to read")
     head: int = Field(default=1, description="Number of lines from the head to skip")
     tail: int = Field(default=1, description="Number of lines from the tail to skip")
+    name: str = Field(default=None, description="Descriptive name")
 
     @model_validator(mode='after')
     def check_file_key_exclusive(self):

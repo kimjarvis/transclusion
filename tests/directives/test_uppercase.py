@@ -2,7 +2,7 @@ from src.syncspec.directives.uppercase import Uppercase
 
 def test_instantiation():
     op = Uppercase()
-    assert op.type == "Uppercase"
+    assert op.syncspec == "Uppercase"
 
 def test_phase_one_pass_through():
     op = Uppercase()
