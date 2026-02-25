@@ -30,12 +30,12 @@ class Registry:
 
         merged = self._merge_dicts_safe(sub[1], sub[4])
 
-        if "type" not in merged:
-            raise ValueError("Missing 'type' key")
+        if "syncspec" not in merged:
+            raise ValueError("Missing 'syncspec' key")
 
-        cls = self._registry.get(merged["type"])
+        cls = self._registry.get(merged["syncspec"])
         if not cls:
-            raise ValueError(f"Unknown type: {merged['type']}")
+            raise ValueError(f"Unknown directive: {merged['syncspec']}")
 
         obj = cls.model_validate(merged)
         return [sub[0], sub[1], obj, sub[2], sub[3], sub[4]]

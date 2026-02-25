@@ -14,7 +14,7 @@ def fib(n):
     :param int n: Index
     :rtype: int
 
-    # {{ "type": "Include", "key": "example" }}
+    # {{ "syncspec": "Include", "key": "example" }}
     assert fib(6) == 8 
     # {{ }} 
     """
@@ -23,7 +23,7 @@ def fib(n):
         a, b = b, a + b
     return a
 
-# {{ "type": "Source", "key": "example", "head": 2 }}
+# {{ "syncspec": "Source", "key": "example", "head": 2 }}
 def test_fib():
     assert fib(6) == 8 
 # {{ }}    
