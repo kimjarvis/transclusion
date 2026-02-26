@@ -7,7 +7,7 @@ def main():
     t = Syncspec()
     t.register("Include", Include)
     t.register("Source", Source)
-    c, x = t.render('''
+    c, x = t.render_string('''
 def fib(n):
     """Return the nth Fibonacci number.
 
@@ -31,7 +31,7 @@ def test_fib():
 
     print(f"x:{x}")
     print(f"Changed:{c}")
-    c1, y= t.render(x)
+    c1, y= t.render_string(x)
     print(f"y:{y}")
     print(f"Changed:{c1}")
     print(f"Idempotent:{x==y}")

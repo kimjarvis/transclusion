@@ -17,9 +17,9 @@ def ensure_balanced_delimiters(string: str, open_delimiter: str = "{{", close_de
         raise ValueError("Opening and closing delimiters must be different")
 
     # Check if the last character of open_delimiter equals the first character of close_delimiter
-    if open_delimiter[-1] == close_delimiter[0]:
-        raise ValueError(
-            "The last character of open_delimiter cannot be the same as the first character of close_delimiter")
+    # if open_delimiter[-1] == close_delimiter[0]:
+    #     raise ValueError(
+    #         "The last character of open_delimiter cannot be the same as the first character of close_delimiter")
 
     open_len = len(open_delimiter)
     close_len = len(close_delimiter)
