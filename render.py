@@ -7,7 +7,7 @@ def main():
     t = Syncspec(open_delimiter = "{#", close_delimiter = "#}")
     t.register("Include", Include)
     t.register("Source", Source)
-    t.render_directory("trial")
+    t.render_paths(["trial","specs"])
 
 if __name__ == "__main__":
     main()
